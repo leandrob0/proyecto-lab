@@ -45,6 +45,7 @@ nodoA* crearNodoPalabras(char* palabra);
 void cargarDiccionario(nodoA** arbolDiccionario);
 int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra);
 void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra);
+int pasarArreglo(char* arreglo);
 void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t);
 void ingresarOcurrencia(nodoT** listaOcurrencias, termino t);
 int verificarLetra(char letra);
@@ -117,21 +118,24 @@ void cargarDiccionario(nodoA** arbolDiccionario)
             {
                 int tamanio = pasarArreglo(palabra);
 
+                ///ARREGLAR EL PASAJE DE LA PALABRA A EL ARRAY DE LA ESTRUCTURA.
+                // intenta pasar la palabra con el tamanio justo a el arreglo de la estructura termino (no funciona)
                 for(int i = 0; i< tamanio; i++)
                 {
-                    printf("%c", palabra[i]);
-                    if(i == tamanio-1)
-                    {
-                        printf("\n");
-                    }
+                    strcat(t.palabra, palabra[i]);
                 }
+
+                ///copia la palabra en la estructura
+                //strcpy(t.palabra, palabra);
+                printf("%s", t.palabra);
+                ///"resetea" el arreglo palabra
                 strcpy(palabra, "                    ");
                 i = 0;
 
-                i = 0;
-                strcpy(t.palabra, palabra);
                 t.pos = pos;
                 t.idDOC = 0;
+
+                // la funcion de buscarPalabra no funciona (creo que es porque no puedo copiar bien la palabra todavia).
                 int found = buscarPalabraEnDiccionario(*arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
 
                 if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
