@@ -128,23 +128,21 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                 strcpy(palabra, "                    ");
                 i = 0;
 
-                if(letra)
-                {
-                    printf("%s", t.palabra);
-                    i = 0;
-                    t.pos = pos;
-                    t.idDOC = 0;
-                    int found = buscarPalabraEnDiccionario(*arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
+                i = 0;
+                strcpy(t.palabra, palabra);
+                t.pos = pos;
+                t.idDOC = 0;
+                int found = buscarPalabraEnDiccionario(*arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
 
-                    if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
-                    {
-                        ingresarArbolOrdenado(arbolDiccionario, t.palabra);
-                    } else
-                    {
-                        cargaDeOcurrencias(arbolDiccionario, t);
-                    }
-                    pos++;
+                if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
+                {
+                    ingresarArbolOrdenado(arbolDiccionario, t.palabra);
                 }
+                else
+                {
+                    cargaDeOcurrencias(arbolDiccionario, t);
+                }
+                pos++;
             }
         }
 
