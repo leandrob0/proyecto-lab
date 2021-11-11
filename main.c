@@ -12,6 +12,7 @@
 */
 
 #define BABEL "la_biblioteca_de_babel.txt"
+#define FUNES "funes_el_memorioso.txt"
 
 typedef struct
 {
@@ -97,7 +98,6 @@ nodoA* crearNodoPalabras(char* palabra)
 void cargarDiccionario(nodoA** arbolDiccionario)
 {
     FILE* fp = fopen(BABEL, "rb");
-    termino t;
     char palabra[20];
     int pos = 0;
     int i = 0;
@@ -107,6 +107,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
     {
         while(fread(&letra,sizeof(char),1,fp) > 0)
         {
+            termino t;
             int esLetra = verificarLetra(letra);
 
             if(esLetra == 1)
@@ -116,26 +117,32 @@ void cargarDiccionario(nodoA** arbolDiccionario)
             }
             else
             {
-                int tamanio = pasarArreglo(palabra);
+                //int tamanio = pasarArreglo(palabra);
 
                 ///ARREGLAR EL PASAJE DE LA PALABRA A EL ARRAY DE LA ESTRUCTURA.
                 // intenta pasar la palabra con el tamanio justo a el arreglo de la estructura termino (no funciona)
+                /*
                 for(int i = 0; i< tamanio; i++)
                 {
                     strcat(t.palabra, palabra[i]);
                 }
-
-                ///copia la palabra en la estructura
-                //strcpy(t.palabra, palabra);
-                printf("%s", t.palabra);
-                ///"resetea" el arreglo palabra
-                strcpy(palabra, "                    ");
+                */
+                //si la palabra esta vacia, no la muestra
+                if(strcmpi(palabra, "") != 0)
+                {
+                    ///copia la palabra en la estructura
+                    strcpy(t.palabra, palabra);
+                    printf("%s ", t.palabra);
+                    ///"resetea" el arreglo palabra
+                    memset(palabra, 0, sizeof(palabra)); //resetea el array a 0
+                }
                 i = 0;
 
                 t.pos = pos;
                 t.idDOC = 0;
 
                 // la funcion de buscarPalabra no funciona (creo que es porque no puedo copiar bien la palabra todavia).
+                /*
                 int found = buscarPalabraEnDiccionario(*arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
 
                 if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
@@ -146,6 +153,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                 {
                     cargaDeOcurrencias(arbolDiccionario, t);
                 }
+                */
                 pos++;
             }
         }
@@ -171,7 +179,7 @@ int verificarLetra(char letra)
 {
     if(letra != 32 && letra != 10)
     {
-        if((letra>=97 && letra<=122) || (letra>=65 && letra<=90))
+        if((letra >= 97 && letra <= 122) || (letra >= 65 && letra <= 90))
         {
             return 1;
         }
