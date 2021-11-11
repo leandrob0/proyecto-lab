@@ -4,3 +4,11 @@
 	<stdlib.h>
 	<string.h>
 
+1636588657 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<wchar.h>
+	<locale.h>
+	<windows.h>
+

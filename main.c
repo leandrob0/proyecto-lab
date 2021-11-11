@@ -1,12 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
+#include <locale.h>
+#include <windows.h>
 
 /**
 
     ESTRUCTURAS Y CONSTANTES A UTILIZAR
 
 */
+
+#define BABEL "la_biblioteca_de_babel.txt"
 
 typedef struct
 {
@@ -42,6 +47,7 @@ int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra);
 void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra);
 void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t);
 void ingresarOcurrencia(nodoT** listaOcurrencias, termino t);
+int verificarLetra(char letra);
 
 /**
 #######################################
@@ -89,30 +95,134 @@ nodoA* crearNodoPalabras(char* palabra)
 ///Cargar el diccionario con los datos de los archivos
 void cargarDiccionario(nodoA** arbolDiccionario)
 {
-    FILE* fp = fopen("hola.txt", "rb");
+    FILE* fp = fopen(BABEL, "rb");
     termino t;
+    char palabra[20];
     int pos = 0;
+    int i = 0;
+    char letra;
 
     if(fp != NULL)
     {
-        while(fread(&t.palabra,sizeof(t.palabra),1,fp) > 0)
+        while(fread(&letra,sizeof(char),1,fp) > 0)
         {
-            t.pos = pos;
-            t.idDOC = 0;
-            int found = buscarPalabraEnDiccionario(*arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
+            //t.pos = pos;
+            //t.idDOC = 0;
+            int esLetra = verificarLetra(letra);
 
-            if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
+            if(esLetra == 1)
             {
-                ingresarArbolOrdenado(arbolDiccionario, t.palabra);
-            } else
-            {
-                cargaDeOcurrencias(arbolDiccionario, t);
+                palabra[i] = letra;
+                i++;
             }
+            else
+            {
+                for(int j = 0; j < i; j++)
+                {
+                    printf("%c", palabra[j]);
+                }
+                strcpy(palabra, "");
+                i = 0;
+                /*
+                if(letra)
+                {
+                    printf("%s", t.palabra);
+                    i = 0;
+                    //t.pos = pos;
+                    //t.idDOC = 0;
+                    /*
+                    int found = buscarPalabraEnDiccionario(*arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
 
-            pos++;
+                    if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
+                    {
+                        ingresarArbolOrdenado(arbolDiccionario, t.palabra);
+                    } else
+                    {
+                        cargaDeOcurrencias(arbolDiccionario, t);
+                    }
+                    pos++;
+                }
+                */
+            }
         }
 
         fclose(fp);
+    }
+}
+
+/*
+void pasarArray(char ch, char* palabra, int* i)
+{
+    switch(ch)
+    {
+    case 'á':
+        palabra[*i] = 'á';
+        *i++;
+        break;
+    case 'é':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'í':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'ó':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'ú':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'ñ':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'Ñ':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'Á':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'É':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'Í':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'Ó':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    case 'Ú':
+        palabra[*i] = ch;
+        *i++;
+        break;
+    }
+}
+*/
+
+int verificarLetra(char letra)
+{
+    if(letra != 32 && letra != 10)
+    {
+        if(letra == 163 || (letra>=97 && letra<=122) || (letra>=65 && letra<=90))
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        return 0;
     }
 }
 
@@ -124,17 +234,20 @@ int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra)
         if(strcmp(arbolDiccionario->palabra, palabra) == 0)
         {
             return 1; // encontrado
-        } else
+        }
+        else
         {
             if(strcmp(arbolDiccionario->palabra, palabra) > 0)
             {
                 return buscarPalabraEnDiccionario(arbolDiccionario->izq, palabra);
-            } else
+            }
+            else
             {
                 return buscarPalabraEnDiccionario(arbolDiccionario->der, palabra);
             }
         }
-    } else
+    }
+    else
     {
         return 0; // no encontrado
     }
@@ -146,12 +259,14 @@ void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra)
     if(*arbolDiccionario == NULL)
     {
         *arbolDiccionario = crearNodoPalabras(palabra);
-    } else
+    }
+    else
     {
         if(strcmp((*arbolDiccionario)->palabra, palabra) > 0)
         {
             ingresarArbolOrdenado(&(*arbolDiccionario)->izq, palabra);
-        } else
+        }
+        else
         {
             ingresarArbolOrdenado(&(*arbolDiccionario)->der, palabra);
         }
@@ -167,12 +282,14 @@ void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t)
         {
             (*arbolDiccionario)->frecuencia++;
             ingresarOcurrencia(&(*arbolDiccionario)->ocurrencias, t);
-        } else
+        }
+        else
         {
             if(strcmp((*arbolDiccionario)->palabra, t.palabra) > 0)
             {
                 cargaDeOcurrencias(&(*arbolDiccionario)->izq, t);
-            } else
+            }
+            else
             {
                 cargaDeOcurrencias(&(*arbolDiccionario)->der, t);
             }
@@ -185,7 +302,8 @@ void ingresarOcurrencia(nodoT** listaOcurrencias, termino t)
     if(*listaOcurrencias == NULL)
     {
         *listaOcurrencias = crearNodoOcurrencias(t);
-    } else
+    }
+    else
     {
         nodoT* aux = *listaOcurrencias;
 
