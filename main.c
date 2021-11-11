@@ -106,8 +106,6 @@ void cargarDiccionario(nodoA** arbolDiccionario)
     {
         while(fread(&letra,sizeof(char),1,fp) > 0)
         {
-            //t.pos = pos;
-            //t.idDOC = 0;
             int esLetra = verificarLetra(letra);
 
             if(esLetra == 1)
@@ -117,20 +115,25 @@ void cargarDiccionario(nodoA** arbolDiccionario)
             }
             else
             {
-                for(int j = 0; j < i; j++)
+                int tamanio = pasarArreglo(palabra);
+
+                for(int i = 0; i< tamanio; i++)
                 {
-                    printf("%c", palabra[j]);
+                    printf("%c", palabra[i]);
+                    if(i == tamanio-1)
+                    {
+                        printf("\n");
+                    }
                 }
-                strcpy(palabra, "");
+                strcpy(palabra, "                    ");
                 i = 0;
-                /*
+
                 if(letra)
                 {
                     printf("%s", t.palabra);
                     i = 0;
-                    //t.pos = pos;
-                    //t.idDOC = 0;
-                    /*
+                    t.pos = pos;
+                    t.idDOC = 0;
                     int found = buscarPalabraEnDiccionario(*arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
 
                     if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
@@ -142,7 +145,6 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                     }
                     pos++;
                 }
-                */
             }
         }
 
@@ -150,68 +152,24 @@ void cargarDiccionario(nodoA** arbolDiccionario)
     }
 }
 
-/*
-void pasarArray(char ch, char* palabra, int* i)
+///funcion que devuelve el tamanio de la palabra que se le pasa
+int pasarArreglo(char* arreglo)
 {
-    switch(ch)
+    int tamanio = 0;
+    for(int i = 0; arreglo[i] != 32 && arreglo[i] != NULL && arreglo[i] != 64; i++)
     {
-    case 'á':
-        palabra[*i] = 'á';
-        *i++;
-        break;
-    case 'é':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'í':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'ó':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'ú':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'ñ':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'Ñ':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'Á':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'É':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'Í':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'Ó':
-        palabra[*i] = ch;
-        *i++;
-        break;
-    case 'Ú':
-        palabra[*i] = ch;
-        *i++;
-        break;
+        tamanio++;
     }
-}
-*/
 
+    return tamanio;
+}
+
+///verifica que sea una letra del alfabeto
 int verificarLetra(char letra)
 {
     if(letra != 32 && letra != 10)
     {
-        if(letra == 163 || (letra>=97 && letra<=122) || (letra>=65 && letra<=90))
+        if((letra>=97 && letra<=122) || (letra>=65 && letra<=90))
         {
             return 1;
         }
@@ -231,13 +189,13 @@ int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra)
 {
     if(arbolDiccionario != NULL)
     {
-        if(strcmp(arbolDiccionario->palabra, palabra) == 0)
+        if(strcmpi(arbolDiccionario->palabra, palabra) == 0)
         {
             return 1; // encontrado
         }
         else
         {
-            if(strcmp(arbolDiccionario->palabra, palabra) > 0)
+            if(strcmpi(arbolDiccionario->palabra, palabra) > 0)
             {
                 return buscarPalabraEnDiccionario(arbolDiccionario->izq, palabra);
             }
@@ -262,7 +220,7 @@ void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra)
     }
     else
     {
-        if(strcmp((*arbolDiccionario)->palabra, palabra) > 0)
+        if(strcmpi((*arbolDiccionario)->palabra, palabra) > 0)
         {
             ingresarArbolOrdenado(&(*arbolDiccionario)->izq, palabra);
         }
@@ -278,14 +236,14 @@ void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t)
 {
     if(*arbolDiccionario != NULL)
     {
-        if(strcmp((*arbolDiccionario)->palabra, t.palabra) == 0)
+        if(strcmpi((*arbolDiccionario)->palabra, t.palabra) == 0)
         {
             (*arbolDiccionario)->frecuencia++;
             ingresarOcurrencia(&(*arbolDiccionario)->ocurrencias, t);
         }
         else
         {
-            if(strcmp((*arbolDiccionario)->palabra, t.palabra) > 0)
+            if(strcmpi((*arbolDiccionario)->palabra, t.palabra) > 0)
             {
                 cargaDeOcurrencias(&(*arbolDiccionario)->izq, t);
             }
