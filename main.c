@@ -142,7 +142,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                 {
                     ingresarArbolOrdenado(arbolDiccionario, t.palabra);
                 }
-                else
+                else //si esta la palabra, busca en el arbol la palabra y se mete a su lista de ocurrencias, y la agrega.
                 {
                     cargaDeOcurrencias(arbolDiccionario, t);
                 }
