@@ -99,6 +99,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
 {
     FILE* fp = fopen(BABEL, "rb");
     char palabra[20];
+    memset(palabra, 0, sizeof(palabra));
     int pos = 0;
     int i = 0;
     char letra;
