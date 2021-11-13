@@ -45,10 +45,8 @@ nodoA* crearNodoPalabras(char* palabra);
 void cargarDiccionario(nodoA** arbolDiccionario);
 int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra);
 void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra);
-int pasarArreglo(char* arreglo);
 void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t);
 void ingresarOcurrencia(nodoT** listaOcurrencias, termino t);
-int verificarLetra(char letra);
 
 /**
 #######################################
@@ -58,7 +56,6 @@ int verificarLetra(char letra);
 
 int main()
 {
-
     nodoA* arbol;
     cargarDiccionario(&arbol);
 
@@ -94,95 +91,95 @@ nodoA* crearNodoPalabras(char* palabra)
 ///Cargar el diccionario con los datos de los archivos
 void cargarDiccionario(nodoA** arbolDiccionario)
 {
-    FILE* fp = fopen(BABEL, "rb");
     char palabra[20];
     memset(palabra, 0, sizeof(palabra));
+
+    int cantDoc = 0;
     int pos = 0;
-    int i = 0;
+    int i = 0; //para cargar la palabra letra por letra
     char letra;
 
-    if(fp != NULL)
+    while(cantDoc < 2)
     {
-        while(fread(&letra,sizeof(char),1,fp) > 0 && i < 20)
+        char nombreArchivo[50];
+
+        if(cantDoc == 0)
         {
-            termino t;
-            // int esLetra = verificarLetra(letra);
-
-            if(isalpha(letra))
-            {
-                palabra[i] = letra;
-                i++;
-            }
-            else
-            {
-                //si la palabra esta vacia, no hace nada
-
-
-                //si la palabra esta vacia, no la muestra
-                if(strcmpi(palabra, "") != 0)
-                {
-                    ///copia la palabra en la estructura
-
-                    strcpy(t.palabra, palabra);
-                    printf("%s ", t.palabra);
-                    ///"resetea" el arreglo palabra
-                    memset(palabra, 0, sizeof(palabra)); //resetea el array a 0
-                }
-                i = 0;
-
-                t.pos = pos;
-                t.idDOC = 0;
-
-                // la funcion de buscarPalabra no funciona (creo que es porque no puedo copiar bien la palabra todavia).
-                //int found = buscarPalabraEnDiccionario(arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
-
-                /*
-                if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
-                {
-                    ingresarArbolOrdenado(arbolDiccionario, t.palabra);
-                }
-                else //si esta la palabra, busca en el arbol la palabra y se mete a su lista de ocurrencias, y la agrega.
-                {
-                    cargaDeOcurrencias(arbolDiccionario, t);
-                }
-                */
-                memset(t.palabra, 0, sizeof(t.palabra));
-
-                pos++;
-            }
+            strcpy(nombreArchivo, BABEL);
+        } else
+        {
+            memset(nombreArchivo,0,sizeof(nombreArchivo));
+            strcpy(nombreArchivo, FUNES);
         }
 
-        fclose(fp);
+        FILE* fp = fopen(nombreArchivo, "rb");
+
+        if(fp != NULL)
+        {
+            while(fread(&letra,sizeof(char),1,fp) > 0 && i < 20)
+            {
+                termino t;
+                // int esLetra = verificarLetra(letra);
+
+                if(isalpha(letra))
+                {
+                    palabra[i] = letra;
+                    i++;
+                }
+                else
+                {
+                    //si la palabra esta vacia, no hace nada
+                    if(strcmpi(palabra, "") != 0)
+                    {
+                        ///copia la palabra en la estructura
+                        strcpy(t.palabra, palabra);
+                        t.pos = pos;
+                        t.idDOC = 0;
+                        printf("%s ", t.palabra);
+
+                        ///aca cargaria el array de terminos
+                        ///-
+
+                        memset(palabra, 0, sizeof(palabra)); //resetea el array a 0
+                        memset(t.palabra, 0, sizeof(t.palabra));
+
+                        pos++;
+                    }
+                    i = 0;
+                }
+            }
+
+            fclose(fp);
+        }
+        cantDoc++;
     }
 }
-
-
 
 ///FUNCION QUE SE FIJA SI EL TERMINO YA ESTA AGREGADO EN EL ARBOL. retorna 1 si lo encontro y 0 si no
 int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra)
 {
+    int encontrado = 0;
+
     if(arbolDiccionario != NULL)
     {
         if(strcmpi(arbolDiccionario->palabra, palabra) == 0)
         {
-            return 1; // encontrado
+            encontrado = 1; // encontrado
         }
         else
         {
             if(strcmpi(arbolDiccionario->palabra, palabra) > 0)
             {
-                return buscarPalabraEnDiccionario(arbolDiccionario->izq, palabra);
+                encontrado = buscarPalabraEnDiccionario(arbolDiccionario->izq, palabra);
             }
             else
             {
-                return buscarPalabraEnDiccionario(arbolDiccionario->der, palabra);
+                encontrado = buscarPalabraEnDiccionario(arbolDiccionario->der, palabra);
             }
         }
     }
-    else
-    {
-        return 0; // no encontrado
-    }
+
+    return encontrado;
 }
 
 ///INGRESA EL NODO EN EL ARBOL ORDENADO ALFABETICAMENTE
@@ -245,5 +242,27 @@ void ingresarOcurrencia(nodoT** listaOcurrencias, termino t)
         }
 
         aux->sig = crearNodoOcurrencias(t);
+    }
+}
+
+void pasarTerminosArchivo(termino* terminos, int validos, int idDoc)
+{
+    char nombreArchivo[20];
+    char num = (idDoc == 1) ? '1' : '2';
+    memset(nombreArchivo,0,sizeof(nombreArchivo));
+    strcpy(nombreArchivo,"diccionario");
+    strcat(nombreArchivo,num);
+    strcat(nombreArchivo,".bin");
+
+    FILE* fp = fopen(nombreArchivo, "ab");
+
+    if(fp)
+    {
+        for(int i = 0; i < validos; i++)
+        {
+            fwrite(&terminos[i],sizeof(termino),1,fp);
+        }
+
+        fclose(fp);
     }
 }
