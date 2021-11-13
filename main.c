@@ -100,6 +100,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
 {
     FILE* fp = fopen(BABEL, "rb");
     char palabra[20];
+    memset(palabra, 0, sizeof(palabra));
     int pos = 0;
     int i = 0;
     char letra;
@@ -135,19 +136,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                 t.pos = pos;
                 t.idDOC = 0;
 
-                // la funcion de buscarPalabra no funciona (creo que es porque no puedo copiar bien la palabra todavia).
-                /*
-                int found = buscarPalabraEnDiccionario(*arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
-
-                if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
-                {
-                    ingresarArbolOrdenado(arbolDiccionario, t.palabra);
-                }
-                else //si esta la palabra, busca en el arbol la palabra y se mete a su lista de ocurrencias, y la agrega.
-                {
-                    cargaDeOcurrencias(arbolDiccionario, t);
-                }
-                */
+       
                 pos++;
             }
         }
