@@ -118,17 +118,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
             }
             else
             {
-                //int tamanio = pasarArreglo(palabra);
-
-                ///ARREGLAR EL PASAJE DE LA PALABRA A EL ARRAY DE LA ESTRUCTURA.
-                // intenta pasar la palabra con el tamanio justo a el arreglo de la estructura termino (no funciona)
-                /*
-                for(int i = 0; i< tamanio; i++)
-                {
-                    strcat(t.palabra, palabra[i]);
-                }
-                */
-                //si la palabra esta vacia, no la muestra
+                //si la palabra esta vacia, no hace nada
                 if(strcmpi(palabra, "") != 0)
                 {
                     ///copia la palabra en la estructura
@@ -143,9 +133,9 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                 t.idDOC = 0;
 
                 // la funcion de buscarPalabra no funciona (creo que es porque no puedo copiar bien la palabra todavia).
-                /*
-                int found = buscarPalabraEnDiccionario(*arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
+                int found = buscarPalabraEnDiccionario(arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
 
+                /*
                 if(found == 0) //si no esta la palabra crea el nodo e inserta esa palabra en el arbol
                 {
                     ingresarArbolOrdenado(arbolDiccionario, t.palabra);
@@ -155,6 +145,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                     cargaDeOcurrencias(arbolDiccionario, t);
                 }
                 */
+                memset(t.palabra, 0, sizeof(t.palabra));
                 pos++;
             }
         }
