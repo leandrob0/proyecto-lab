@@ -4,7 +4,8 @@
 #include <wchar.h>
 #include <locale.h>
 #include <windows.h>
-
+#include <ctype.h>
+// #include <carga_arbol.h>
 /**
 
     ESTRUCTURAS Y CONSTANTES A UTILIZAR
@@ -105,32 +106,25 @@ void cargarDiccionario(nodoA** arbolDiccionario)
 
     if(fp != NULL)
     {
-        while(fread(&letra,sizeof(char),1,fp) > 0)
+        while(fread(&letra,sizeof(char),1,fp) > 0 && i < 20)
         {
             termino t;
-            int esLetra = verificarLetra(letra);
+            // int esLetra = verificarLetra(letra);
 
-            if(esLetra == 1)
+            if(isalpha(letra))
             {
                 palabra[i] = letra;
                 i++;
             }
             else
             {
-                //int tamanio = pasarArreglo(palabra);
+                
 
-                ///ARREGLAR EL PASAJE DE LA PALABRA A EL ARRAY DE LA ESTRUCTURA.
-                // intenta pasar la palabra con el tamanio justo a el arreglo de la estructura termino (no funciona)
-                /*
-                for(int i = 0; i< tamanio; i++)
-                {
-                    strcat(t.palabra, palabra[i]);
-                }
-                */
                 //si la palabra esta vacia, no la muestra
                 if(strcmpi(palabra, "") != 0)
                 {
                     ///copia la palabra en la estructura
+
                     strcpy(t.palabra, palabra);
                     printf("%s ", t.palabra);
                     ///"resetea" el arreglo palabra
@@ -162,37 +156,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
     }
 }
 
-///funcion que devuelve el tamanio de la palabra que se le pasa
-int pasarArreglo(char* arreglo)
-{
-    int tamanio = 0;
-    for(int i = 0; arreglo[i] != 32 && arreglo[i] != NULL && arreglo[i] != 64; i++)
-    {
-        tamanio++;
-    }
 
-    return tamanio;
-}
-
-///verifica que sea una letra del alfabeto
-int verificarLetra(char letra)
-{
-    if(letra != 32 && letra != 10)
-    {
-        if((letra >= 97 && letra <= 122) || (letra >= 65 && letra <= 90))
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else
-    {
-        return 0;
-    }
-}
 
 ///FUNCION QUE SE FIJA SI EL TERMINO YA ESTA AGREGADO EN EL ARBOL. retorna 1 si lo encontro y 0 si no
 int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra)
