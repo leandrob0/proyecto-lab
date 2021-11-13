@@ -4,7 +4,8 @@
 #include <wchar.h>
 #include <locale.h>
 #include <windows.h>
-
+#include <ctype.h>
+// #include <carga_arbol.h>
 /**
 
     ESTRUCTURAS Y CONSTANTES A UTILIZAR
@@ -106,22 +107,29 @@ void cargarDiccionario(nodoA** arbolDiccionario)
 
     if(fp != NULL)
     {
-        while(fread(&letra,sizeof(char),1,fp) > 0)
+        while(fread(&letra,sizeof(char),1,fp) > 0 && i < 20)
         {
             termino t;
-            int esLetra = verificarLetra(letra);
+            // int esLetra = verificarLetra(letra);
 
-            if(esLetra == 1)
+            if(isalpha(letra))
             {
                 palabra[i] = letra;
                 i++;
             }
             else
             {
+<<<<<<< HEAD
                 //si la palabra esta vacia, no hace nada
+=======
+                
+
+                //si la palabra esta vacia, no la muestra
+>>>>>>> 30d2c4b90e9e53474f43cf8c84040e5a5cb62387
                 if(strcmpi(palabra, "") != 0)
                 {
                     ///copia la palabra en la estructura
+
                     strcpy(t.palabra, palabra);
                     printf("%s ", t.palabra);
                     ///"resetea" el arreglo palabra
@@ -132,6 +140,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                 t.pos = pos;
                 t.idDOC = 0;
 
+<<<<<<< HEAD
                 // la funcion de buscarPalabra no funciona (creo que es porque no puedo copiar bien la palabra todavia).
                 int found = buscarPalabraEnDiccionario(arbolDiccionario, t.palabra); //busca si la palabra ya esta en el arbol.
 
@@ -146,6 +155,9 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                 }
                 */
                 memset(t.palabra, 0, sizeof(t.palabra));
+=======
+       
+>>>>>>> 30d2c4b90e9e53474f43cf8c84040e5a5cb62387
                 pos++;
             }
         }
@@ -154,37 +166,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
     }
 }
 
-///funcion que devuelve el tamanio de la palabra que se le pasa
-int pasarArreglo(char* arreglo)
-{
-    int tamanio = 0;
-    for(int i = 0; arreglo[i] != 32 && arreglo[i] != NULL && arreglo[i] != 64; i++)
-    {
-        tamanio++;
-    }
 
-    return tamanio;
-}
-
-///verifica que sea una letra del alfabeto
-int verificarLetra(char letra)
-{
-    if(letra != 32 && letra != 10)
-    {
-        if((letra >= 97 && letra <= 122) || (letra >= 65 && letra <= 90))
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else
-    {
-        return 0;
-    }
-}
 
 ///FUNCION QUE SE FIJA SI EL TERMINO YA ESTA AGREGADO EN EL ARBOL. retorna 1 si lo encontro y 0 si no
 int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra)
