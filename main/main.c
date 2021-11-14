@@ -12,7 +12,7 @@
 
 #define BABEL "la_biblioteca_de_babel.txt"
 #define FUNES "funes_el_memorioso.txt"
-
+#define CANT_MAX 200000
 typedef struct
 {
     char palabra[20];
@@ -40,14 +40,15 @@ typedef struct nodoA
     PROTOTIPADO
 */
 
-nodoT* crearNodoOcurrencias(termino palabra);
-nodoA* crearNodoPalabras(char* palabra);
-void cargarDiccionario(nodoA** arbolDiccionario);
-int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra);
-void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra);
-void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t);
-void ingresarOcurrencia(nodoT** listaOcurrencias, termino t);
-
+// nodoT* crearNodoOcurrencias(termino palabra);
+// nodoA* crearNodoPalabras(char* palabra);
+// int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra);
+// void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra);
+// void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t);
+// void ingresarOcurrencia(nodoT** listaOcurrencias, termino t);
+termino agregarTermino(termino t);
+void cargarDiccionario(termino arr[], int* validos);
+void pasarTerminosArchivo(char nombreArchi[],termino* terminos, int validos);
 /**
 #######################################
     MAIN
@@ -57,8 +58,34 @@ void ingresarOcurrencia(nodoT** listaOcurrencias, termino t);
 int main()
 {
     nodoA* arbol;
-    cargarDiccionario(&arbol);
+    termino arr[70000];
+    termino t;
+    int validos = 0;
+    cargarDiccionario(arr, &validos);
+    printf("\n\nvalidos vale %d", validos);
 
+    pasarTerminosArchivo("diccionadio.bin",arr, validos);
+    FILE* archi = fopen("diccionadio.bin", "rb");
+    while (fread(&t,sizeof(termino),1,archi) > 0)
+    {
+        printf("\n########################################################\n");
+        printf("palabra: %s\n" ,t.palabra);
+        printf("ID doc: %d\n" ,t.idDOC);
+        printf("Pos: %d" ,t.pos);
+        printf("\n########################################################\n");
+    }
+    
+
+    // for (int i = 0; i < validos; i++){
+
+    //     printf("\n########################################################\n");
+    //     printf("palabra: %s\n" ,arr[i].palabra);
+    //     printf("ID doc: %d\n" ,arr[i].idDOC);
+    //     printf("Pos: %d\n" ,arr[i].pos);
+    //     printf("\n########################################################\n");
+
+
+    // }
     return 0;
 }
 
@@ -87,9 +114,18 @@ nodoA* crearNodoPalabras(char* palabra)
 
     return nuevo;
 }
+///carga un termino
+termino agregarTermino(termino t){
+    termino term;
+
+    term = t;
+
+    return term;
+}
+
 
 ///Cargar el diccionario con los datos de los archivos
-void cargarDiccionario(nodoA** arbolDiccionario)
+void cargarDiccionario(termino arr[], int* validos)
 {
     char palabra[20];
     memset(palabra, 0, sizeof(palabra));
@@ -97,6 +133,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
     int cantDoc = 0;
     int pos = 0;
     int i = 0; //para cargar la palabra letra por letra
+    int j = 0;
     char letra;
 
     while(cantDoc < 2)
@@ -113,6 +150,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
         }
 
         FILE* fp = fopen(nombreArchivo, "rb");
+        // FILE* fp = fopen(BABEL, "rb");
 
         if(fp != NULL)
         {
@@ -135,9 +173,16 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                         strcpy(t.palabra, palabra);
                         t.pos = pos;
                         t.idDOC = cantDoc;
+<<<<<<< HEAD
                         printf("%s ", t.palabra);
+=======
+                        // printf("%s ", t.palabra);
+>>>>>>> 9c84fe8a239c2844e9c4fd58143a54226d6b81a7
 
                         ///aca cargaria el array de terminos
+                        arr[j] = agregarTermino(t);
+                        j++;
+                        (*validos)++;
                         ///-
 
                         memset(palabra, 0, sizeof(palabra)); //resetea el array a 0
@@ -155,36 +200,10 @@ void cargarDiccionario(nodoA** arbolDiccionario)
     }
 }
 
-///FUNCION QUE SE FIJA SI EL TERMINO YA ESTA AGREGADO EN EL ARBOL. retorna 1 si lo encontro y 0 si no
-int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra)
+
+void pasarTerminosArchivo(char nombreArchi[],termino* terminos, int validos)
 {
-    int encontrado = 0;
-
-    if(arbolDiccionario != NULL)
-    {
-        if(strcmpi(arbolDiccionario->palabra, palabra) == 0)
-        {
-            encontrado = 1; // encontrado
-        }
-        else
-        {
-            if(strcmpi(arbolDiccionario->palabra, palabra) > 0)
-            {
-                encontrado = buscarPalabraEnDiccionario(arbolDiccionario->izq, palabra);
-            }
-            else
-            {
-                encontrado = buscarPalabraEnDiccionario(arbolDiccionario->der, palabra);
-            }
-        }
-    }
-
-    return encontrado;
-}
-
-///INGRESA EL NODO EN EL ARBOL ORDENADO ALFABETICAMENTE
-void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra)
-{
+<<<<<<< HEAD
     if(*arbolDiccionario == NULL)
     {
         *arbolDiccionario = crearNodoPalabras(palabra);
@@ -253,8 +272,10 @@ void pasarTerminosArchivo(termino* terminos, int validos, int idDoc)
     strcpy(nombreArchivo,"diccionario");
     strcat(nombreArchivo,num);
     strcat(nombreArchivo,".bin");
+=======
+>>>>>>> 9c84fe8a239c2844e9c4fd58143a54226d6b81a7
 
-    FILE* fp = fopen(nombreArchivo, "ab");
+    FILE* fp = fopen(nombreArchi, "ab");
 
     if(fp)
     {
@@ -266,3 +287,120 @@ void pasarTerminosArchivo(termino* terminos, int validos, int idDoc)
         fclose(fp);
     }
 }
+
+
+
+
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+
+
+
+
+// ///FUNCION QUE SE FIJA SI EL TERMINO YA ESTA AGREGADO EN EL ARBOL. retorna 1 si lo encontro y 0 si no
+// int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra)
+// {
+//     int encontrado = 0;
+
+//     if(arbolDiccionario != NULL)
+//     {
+//         if(strcmpi(arbolDiccionario->palabra, palabra) == 0)
+//         {
+//             encontrado = 1; // encontrado
+//         }
+//         else
+//         {
+//             if(strcmpi(arbolDiccionario->palabra, palabra) > 0)
+//             {
+//                 encontrado = buscarPalabraEnDiccionario(arbolDiccionario->izq, palabra);
+//             }
+//             else
+//             {
+//                 encontrado = buscarPalabraEnDiccionario(arbolDiccionario->der, palabra);
+//             }
+//         }
+//     }
+
+//     return encontrado;
+// }
+
+// ///INGRESA EL NODO EN EL ARBOL ORDENADO ALFABETICAMENTE
+// void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra)
+// {
+//     if(*arbolDiccionario == NULL)
+//     {
+//         *arbolDiccionario = crearNodoPalabras(palabra);
+//     }
+//     else
+//     {
+//         if(strcmpi((*arbolDiccionario)->palabra, palabra) > 0)
+//         {
+//             ingresarArbolOrdenado(&(*arbolDiccionario)->izq, palabra);
+//         }
+//         else
+//         {
+//             ingresarArbolOrdenado(&(*arbolDiccionario)->der, palabra);
+//         }
+//     }
+// }
+
+// ///CARGAR EN LA LISTA DE OCURRENCIAS DE EL NODO SELECCIONADO
+// void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t)
+// {
+//     if(*arbolDiccionario != NULL)
+//     {
+//         if(strcmpi((*arbolDiccionario)->palabra, t.palabra) == 0)
+//         {
+//             (*arbolDiccionario)->frecuencia++;
+//             ingresarOcurrencia(&(*arbolDiccionario)->ocurrencias, t);
+//         }
+//         else
+//         {
+//             if(strcmpi((*arbolDiccionario)->palabra, t.palabra) > 0)
+//             {
+//                 cargaDeOcurrencias(&(*arbolDiccionario)->izq, t);
+//             }
+//             else
+//             {
+//                 cargaDeOcurrencias(&(*arbolDiccionario)->der, t);
+//             }
+//         }
+//     }
+// }
+
+// void ingresarOcurrencia(nodoT** listaOcurrencias, termino t)
+// {
+//     if(*listaOcurrencias == NULL)
+//     {
+//         *listaOcurrencias = crearNodoOcurrencias(t);
+//     }
+//     else
+//     {
+//         nodoT* aux = *listaOcurrencias;
+
+//         while(aux->sig != NULL)
+//         {
+//             aux = aux->sig;
+//         }
+
+//         aux->sig = crearNodoOcurrencias(t);
+//     }
+// }
+
