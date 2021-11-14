@@ -134,7 +134,7 @@ void cargarDiccionario(nodoA** arbolDiccionario)
                         ///copia la palabra en la estructura
                         strcpy(t.palabra, palabra);
                         t.pos = pos;
-                        t.idDOC = 0;
+                        t.idDOC = cantDoc;
                         printf("%s ", t.palabra);
 
                         ///aca cargaria el array de terminos
@@ -248,7 +248,7 @@ void ingresarOcurrencia(nodoT** listaOcurrencias, termino t)
 void pasarTerminosArchivo(termino* terminos, int validos, int idDoc)
 {
     char nombreArchivo[20];
-    char num = (idDoc == 1) ? '1' : '2';
+    char num = (idDoc == 0) ? '1' : '2';
     memset(nombreArchivo,0,sizeof(nombreArchivo));
     strcpy(nombreArchivo,"diccionario");
     strcat(nombreArchivo,num);
