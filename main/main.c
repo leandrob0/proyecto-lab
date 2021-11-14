@@ -63,7 +63,7 @@ int main()
     int validos = 0;
     cargarDiccionario(arr, &validos);
 
-    FILE* archi = fopen("diccionario1.bin", "rb");
+    FILE* archi = fopen("diccionario.bin", "rb");
     while (fread(&t,sizeof(termino),1,archi) > 0)
     {
         printf("\n########################################################\n");
@@ -190,8 +190,8 @@ void cargarDiccionario(termino arr[], int* validos)
         }
         ///RESETEA LA POSICION AL CAMBIAR DE DOCUMENTO
         pos = 0;
-        pasarTerminosArchivo(arr,*validos, cantDoc); //PASA EL ARRAY A UN ARCHIVO (no importa que empiece de 0 ya que solo escribe los que tienen el mismo id que se pasa por parametro)
-        cantDoc++; //aumenta el id del documento cuando ya termino uno.
+        pasarTerminosArchivo(arr,*validos, cantDoc);
+        cantDoc++;
     }
 }
 
@@ -262,14 +262,7 @@ void pasarTerminosArchivo(termino* terminos, int validos, int idDoc)
 {
     char nombreArchivo[20];
     memset(nombreArchivo,0,sizeof(nombreArchivo));
-
-    if(idDoc == 0)
-    {
-        strcpy(nombreArchivo, "diccionario0");
-    } else
-    {
-        strcpy(nombreArchivo, "diccionario1");
-    }
+    strcpy(nombreArchivo, "diccionario");
     strcat(nombreArchivo,".bin");
 
     FILE* fp = fopen(nombreArchivo, "ab");
