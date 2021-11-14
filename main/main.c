@@ -48,7 +48,7 @@ typedef struct nodoA
 // void ingresarOcurrencia(nodoT** listaOcurrencias, termino t);
 termino agregarTermino(termino t);
 void cargarDiccionario(termino arr[], int* validos);
-void pasarTerminosArchivo(char nombreArchi[],termino* terminos, int validos);
+void pasarTerminosArchivo(termino* terminos, int validos, int idDoc);
 /**
 #######################################
     MAIN
@@ -62,10 +62,8 @@ int main()
     termino t;
     int validos = 0;
     cargarDiccionario(arr, &validos);
-    printf("\n\nvalidos vale %d", validos);
 
-    pasarTerminosArchivo("diccionadio.bin",arr, validos);
-    FILE* archi = fopen("diccionadio.bin", "rb");
+    FILE* archi = fopen("diccionario1.bin", "rb");
     while (fread(&t,sizeof(termino),1,archi) > 0)
     {
         printf("\n########################################################\n");
@@ -74,7 +72,7 @@ int main()
         printf("Pos: %d" ,t.pos);
         printf("\n########################################################\n");
     }
-    
+
 
     // for (int i = 0; i < validos; i++){
 
@@ -157,7 +155,6 @@ void cargarDiccionario(termino arr[], int* validos)
             while(fread(&letra,sizeof(char),1,fp) > 0 && i < 20)
             {
                 termino t;
-                // int esLetra = verificarLetra(letra);
 
                 if(isalpha(letra))
                 {
@@ -173,11 +170,6 @@ void cargarDiccionario(termino arr[], int* validos)
                         strcpy(t.palabra, palabra);
                         t.pos = pos;
                         t.idDOC = cantDoc;
-<<<<<<< HEAD
-                        printf("%s ", t.palabra);
-=======
-                        // printf("%s ", t.palabra);
->>>>>>> 9c84fe8a239c2844e9c4fd58143a54226d6b81a7
 
                         ///aca cargaria el array de terminos
                         arr[j] = agregarTermino(t);
@@ -196,14 +188,16 @@ void cargarDiccionario(termino arr[], int* validos)
 
             fclose(fp);
         }
-        cantDoc++;
+        ///RESETEA LA POSICION AL CAMBIAR DE DOCUMENTO
+        pos = 0;
+        pasarTerminosArchivo(arr,*validos, cantDoc); //PASA EL ARRAY A UN ARCHIVO (no importa que empiece de 0 ya que solo escribe los que tienen el mismo id que se pasa por parametro)
+        cantDoc++; //aumenta el id del documento cuando ya termino uno.
     }
 }
 
-
-void pasarTerminosArchivo(char nombreArchi[],termino* terminos, int validos)
+void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra)
 {
-<<<<<<< HEAD
+
     if(*arbolDiccionario == NULL)
     {
         *arbolDiccionario = crearNodoPalabras(palabra);
@@ -267,21 +261,27 @@ void ingresarOcurrencia(nodoT** listaOcurrencias, termino t)
 void pasarTerminosArchivo(termino* terminos, int validos, int idDoc)
 {
     char nombreArchivo[20];
-    char num = (idDoc == 0) ? '1' : '2';
     memset(nombreArchivo,0,sizeof(nombreArchivo));
-    strcpy(nombreArchivo,"diccionario");
-    strcat(nombreArchivo,num);
-    strcat(nombreArchivo,".bin");
-=======
->>>>>>> 9c84fe8a239c2844e9c4fd58143a54226d6b81a7
 
-    FILE* fp = fopen(nombreArchi, "ab");
+    if(idDoc == 0)
+    {
+        strcpy(nombreArchivo, "diccionario0");
+    } else
+    {
+        strcpy(nombreArchivo, "diccionario1");
+    }
+    strcat(nombreArchivo,".bin");
+
+    FILE* fp = fopen(nombreArchivo, "ab");
 
     if(fp)
     {
         for(int i = 0; i < validos; i++)
         {
-            fwrite(&terminos[i],sizeof(termino),1,fp);
+            if(terminos[i].idDOC == idDoc)
+            {
+                fwrite(&terminos[i],sizeof(termino),1,fp);
+            }
         }
 
         fclose(fp);
@@ -291,25 +291,25 @@ void pasarTerminosArchivo(termino* terminos, int validos, int idDoc)
 
 
 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
