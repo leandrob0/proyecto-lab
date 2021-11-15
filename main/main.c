@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <wchar.h>
 #include <locale.h>
 #include <windows.h>
 #include <ctype.h>
@@ -57,21 +56,23 @@ void pasarTerminosArchivo(termino* terminos, int validos, int idDoc);
 
 int main()
 {
-    nodoA* arbol;
+    nodoA* arbol = NULL;
     termino arr[70000];
     termino t;
     int validos = 0;
-    cargarDiccionario(arr, &validos);
+    cargarDiccionario(arr, &validos); //ojo con cargar muchas veces el archivo, cargarlo 1 vez y comentar esta linea
+    cargarMotorDeBusqueda("diccionario.bin", &arbol);
+    mostrarArbol(arbol); //al mostrar al algunas pocas letras sueltas (ver eso despues) creo que son los textos
 
-    FILE* archi = fopen("diccionario.bin", "rb");
-    while (fread(&t,sizeof(termino),1,archi) > 0)
-    {
-        printf("\n########################################################\n");
-        printf("palabra: %s\n" ,t.palabra);
-        printf("ID doc: %d\n" ,t.idDOC);
-        printf("Pos: %d" ,t.pos);
-        printf("\n########################################################\n");
-    }
+    //FILE* archi = fopen("diccionario.bin", "rb");
+    //while (fread(&t,sizeof(termino),1,archi) > 0)
+    //{
+     //   printf("\n########################################################\n");
+     //   printf("palabra: %s\n",t.palabra);
+     //   printf("ID doc: %d\n",t.idDOC);
+     //   printf("Pos: %d",t.pos);
+      //  printf("\n########################################################\n");
+    //}
 
 
     // for (int i = 0; i < validos; i++){
@@ -113,7 +114,8 @@ nodoA* crearNodoPalabras(char* palabra)
     return nuevo;
 }
 ///carga un termino
-termino agregarTermino(termino t){
+termino agregarTermino(termino t)
+{
     termino term;
 
     term = t;
@@ -141,7 +143,8 @@ void cargarDiccionario(termino arr[], int* validos)
         if(cantDoc == 0)
         {
             strcpy(nombreArchivo, BABEL);
-        } else
+        }
+        else
         {
             memset(nombreArchivo,0,sizeof(nombreArchivo));
             strcpy(nombreArchivo, FUNES);
@@ -229,11 +232,11 @@ void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t)
         {
             if(strcmpi((*arbolDiccionario)->palabra, t.palabra) > 0)
             {
-                cargaDeOcurrencias(&(*arbolDiccionario)->izq, t);
+                cargaDeOcurrencias(&((*arbolDiccionario)->izq), t);
             }
             else
             {
-                cargaDeOcurrencias(&(*arbolDiccionario)->der, t);
+                cargaDeOcurrencias(&((*arbolDiccionario)->der), t);
             }
         }
     }
@@ -241,20 +244,31 @@ void cargaDeOcurrencias(nodoA** arbolDiccionario, termino t)
 
 void ingresarOcurrencia(nodoT** listaOcurrencias, termino t)
 {
+    nodoT* nuevo = crearNodoOcurrencias(t);
+
     if(*listaOcurrencias == NULL)
     {
-        *listaOcurrencias = crearNodoOcurrencias(t);
+        *listaOcurrencias = nuevo;
     }
     else
     {
-        nodoT* aux = *listaOcurrencias;
+        nodoT* ant = *listaOcurrencias;
+        nodoT* act = (*listaOcurrencias)->sig;
 
-        while(aux->sig != NULL)
+        if((*listaOcurrencias)->idDOC > t.idDOC || ((*listaOcurrencias)->pos > t.pos && (*listaOcurrencias)->idDOC  == t.idDOC))
         {
-            aux = aux->sig;
+            nuevo->sig = *listaOcurrencias;
+            *listaOcurrencias = nuevo;
         }
 
-        aux->sig = crearNodoOcurrencias(t);
+        while(act != NULL && (act->idDOC < t.idDOC && (act->pos < t.pos && act->idDOC == t.idDOC)))
+        {
+            ant = act;
+            act = act->sig;
+        }
+
+        ant->sig = nuevo;
+        nuevo->sig = act;
     }
 }
 
@@ -281,8 +295,69 @@ void pasarTerminosArchivo(termino* terminos, int validos, int idDoc)
     }
 }
 
+///CARGA EL MOTOR DE BUSQUEDA.
+void cargarMotorDeBusqueda(char* nombreArchivo, nodoA** lista)
+{
+    FILE* fp = fopen(nombreArchivo, "rb");
+    int found = 0;
+    termino t;
 
+    if(fp != NULL)
+    {
+        while(fread(&t,sizeof(termino),1,fp) > 0)
+        {
+            found = buscarPalabraEnDiccionario(*lista, t.palabra);
 
+            if(found == 0) //si la palabra no esta cargada todavia, la inserta en el arbol
+            {
+                ingresarArbolOrdenado(lista, t.palabra);
+            }
+            cargaDeOcurrencias(lista, t); //carga la ocurrencia
+        }
+
+        fclose(fp);
+    }
+    else
+    {
+        printf("Error al abrir el archivo.\n");
+    }
+}
+
+///FUNCION QUE SE FIJA SI EL TERMINO YA ESTA AGREGADO EN EL ARBOL. retorna 1 si lo encontro y 0 si no
+int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra)
+{
+    if(arbolDiccionario != NULL)
+    {
+        if(strcmpi(arbolDiccionario->palabra, palabra) == 0)
+        {
+            return 1; // encontrado
+        }
+        else
+        {
+            if(strcmpi(arbolDiccionario->palabra, palabra) > 0)
+            {
+                return buscarPalabraEnDiccionario(arbolDiccionario->izq, palabra);
+            }
+            else
+            {
+                return buscarPalabraEnDiccionario(arbolDiccionario->der, palabra);
+            }
+        }
+    } else
+    {
+        return 0;
+    }
+}
+
+void mostrarArbol(nodoA* arbol)
+{
+    if(arbol != NULL)
+    {
+        mostrarArbol(arbol->izq);
+        printf("%s ", arbol->palabra);
+        mostrarArbol(arbol->der);
+    }
+}
 
 //
 //
@@ -304,35 +379,6 @@ void pasarTerminosArchivo(termino* terminos, int validos, int idDoc)
 //
 //
 
-
-
-
-// ///FUNCION QUE SE FIJA SI EL TERMINO YA ESTA AGREGADO EN EL ARBOL. retorna 1 si lo encontro y 0 si no
-// int buscarPalabraEnDiccionario(nodoA* arbolDiccionario, char* palabra)
-// {
-//     int encontrado = 0;
-
-//     if(arbolDiccionario != NULL)
-//     {
-//         if(strcmpi(arbolDiccionario->palabra, palabra) == 0)
-//         {
-//             encontrado = 1; // encontrado
-//         }
-//         else
-//         {
-//             if(strcmpi(arbolDiccionario->palabra, palabra) > 0)
-//             {
-//                 encontrado = buscarPalabraEnDiccionario(arbolDiccionario->izq, palabra);
-//             }
-//             else
-//             {
-//                 encontrado = buscarPalabraEnDiccionario(arbolDiccionario->der, palabra);
-//             }
-//         }
-//     }
-
-//     return encontrado;
-// }
 
 // ///INGRESA EL NODO EN EL ARBOL ORDENADO ALFABETICAMENTE
 // void ingresarArbolOrdenado(nodoA** arbolDiccionario, char* palabra)
