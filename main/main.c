@@ -11,6 +11,7 @@
 */
 
 #define DICCIONARIO "diccionario.bin"
+#define ARCHIVOID "ids.bin"
 #define CANT_MAX 200000
 typedef struct
 {
@@ -42,7 +43,7 @@ typedef struct nodoA
 nodoT *crearNodoOcurrencias(termino palabra);
 nodoA *crearNodoPalabras(char *palabra);
 termino agregarTermino(termino t);
-void cargarDiccionario(termino arr[], int *validos);
+void cargarDiccionario(termino arr[], int *validos, char* archivoIds);
 void ingresarArbolOrdenado(nodoA **arbolDiccionario, char *palabra);
 void cargaDeOcurrencias(nodoA **arbolDiccionario, termino t);
 void ingresarOcurrencia(nodoT **listaOcurrencias, termino t);
@@ -50,8 +51,9 @@ void pasarTerminosArchivo(termino *terminos, int validos, int idDoc);
 void cargarMotorDeBusqueda(char *nombreArchivo, nodoA **lista);
 int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra);
 void mostrarArbol(nodoA *arbol);
-void verLista(nodoT *lista);
-void buscarNodo(nodoA *arbol, char *palabra);
+void verLista(nodoT *lista, int idArchivo);
+void buscarNodo(nodoA *arbol, char *palabra, int idArchivo);
+int retornarIdMayor(char* nombreArchivo);
 
 int menu();
 void funcionesMenu(termino *arr, int *validos, nodoA **arbol);
@@ -113,18 +115,31 @@ termino agregarTermino(termino t)
 }
 
 /// Cargar el diccionario con los datos de los archivos
-void cargarDiccionario(termino arr[], int *validos)
+void cargarDiccionario(termino arr[], int *validos, char* archivoIds)
 {
     system("cls");
     char palabra[20];
     char seguir = 's';
     memset(palabra, 0, sizeof(palabra));
     int flag = 0;
+    int aux;
     int cantDoc = 0;
     int pos = 0;
     int i = 0; // para cargar la palabra letra por letra
     int j = 0;
     char letra;
+
+    cantDoc = retornarIdMayor(ARCHIVOID);
+
+    if(cantDoc == -1)
+    {
+        cantDoc = 0;
+    } else
+    {
+        cantDoc++; //como la funcion retorna el ultimo id que se agrego, sumo 1 para empezar con el siguiente archivo
+    }
+
+    FILE* abrir = fopen(archivoIds, "ab");
 
     while (seguir == 's')
     {
@@ -195,6 +210,7 @@ void cargarDiccionario(termino arr[], int *validos)
         {
             pos = 0;
             pasarTerminosArchivo(arr, *validos, cantDoc);
+            fwrite(&cantDoc,sizeof(int),1,abrir);
             cantDoc++;
         }
         printf("cant doc: %d" ,cantDoc);
@@ -204,6 +220,8 @@ void cargarDiccionario(termino arr[], int *validos)
 
         memset(nombreArchivo, 0, sizeof(nombreArchivo));
     }
+
+    fclose(abrir);
 }
 
 void ingresarArbolOrdenado(nodoA **arbolDiccionario, char *palabra)
@@ -368,19 +386,21 @@ void mostrarArbol(nodoA *arbol)
     }
 }
 
-void verLista(nodoT *lista)
+void verLista(nodoT *lista, int idArchivo)
 {
 
     while (lista != NULL)
     {
-
-        printf("Documento ID:%d\n", lista->idDOC);
-        printf("posicion:%d\n", lista->pos);
-
+        if(idArchivo == lista->idDOC)
+        {
+            printf("Documento ID:%d\n", lista->idDOC);
+            printf("posicion:%d\n", lista->pos);
+            printf("\n");
+        }
         lista = lista->sig;
     }
 }
-void buscarNodo(nodoA *arbol, char *palabra)
+void buscarNodo(nodoA *arbol, char *palabra, int idArchivo)
 {
 
     if (arbol)
@@ -389,7 +409,7 @@ void buscarNodo(nodoA *arbol, char *palabra)
         if (strcmpi(arbol->palabra, palabra) == 0)
         {
 
-            verLista(arbol->ocurrencias);
+            verLista(arbol->ocurrencias, idArchivo);
 
         }
         else
@@ -397,15 +417,36 @@ void buscarNodo(nodoA *arbol, char *palabra)
             if (strcmpi(arbol->palabra, palabra) > 0)
             {
 
-                buscarNodo(arbol->izq, palabra);
+                buscarNodo(arbol->izq, palabra, idArchivo);
             }
             else
             {
 
-                buscarNodo(arbol->der, palabra);
+                buscarNodo(arbol->der, palabra, idArchivo);
             }
         }
     }
+}
+
+///RETORNA LA ULTIMA ID AGREGADA.
+int retornarIdMayor(char* nombreArchivo)
+{
+    FILE* fp = fopen(nombreArchivo, "rb");
+    int id = 0;
+    int aux;
+
+    if(fp != NULL)
+    {
+        while(fread(&aux,sizeof(int),1,fp) > 0)
+        {
+            id = aux;
+        }
+    } else
+    {
+        return -1;
+    }
+
+    return id;
 }
 
 int menu()
@@ -430,6 +471,8 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
 
     bool repite = true;
     int opcion = 0;
+    int id = 0;
+    int archivoElegido;
     char palabra[20];
     int cantDoc = 0;
 
@@ -451,16 +494,33 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
         switch (opcion)
         {
         case 1:
-            cargarDiccionario(arr, validos); // ojo con cargar muchas veces el archivo, cargarlo 1 vez y comentar esta linea
+            cargarDiccionario(arr, validos, ARCHIVOID); // ojo con cargar muchas veces el archivo, cargarlo 1 vez y comentar esta linea
             cargarMotorDeBusqueda(DICCIONARIO, arbol);
             break;
 
         case 2:
             system("cls");
+
+            ///COMO ESTA CONSIGNA PIDE SOLO BUSCAR EN UN ARCHIVO LE PIDE AL USUARIO EN CUAL QUIERE BUSCAR
+            id = retornarIdMayor(ARCHIVOID);
+            //si no hay archivos agregados al diccionario todavia sale.
+            if(id == -1)
+            {
+                printf("No hay archivos agregados.\n");
+                system("pause");
+                break;
+            }
+
+            do
+            {
+                printf("Ingrese el ID del archivo en el que desee buscar: ");
+                scanf("%i",&archivoElegido);
+            }while(archivoElegido > id || archivoElegido < 0);
+
             printf("\n\nIngrese palabra que desea buscar: ");
             fflush(stdin);
             gets(palabra);
-            buscarNodo(*arbol, palabra);
+            buscarNodo(*arbol, palabra, archivoElegido);
             memset(palabra, 0, sizeof(palabra));
             system("pause");
             break;
