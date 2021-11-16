@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1636934960 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\main.c
+1637087041 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<locale.h>
 	<windows.h>
+	<stdbool.h>
 	<ctype.h>
 

@@ -70,9 +70,9 @@ int main()
     int validos = 0;
 
     funcionesMenu(arr, &validos, &arbol);
-    // cargarMotorDeBusqueda(DICCIONARIO, &arbol);
-// 
-    // mostrarArbol(arbol); //al mostrar al algunas pocas letras sueltas (ver eso despues) creo que son los textos
+    //cargarDiccionario(arr, &validos);
+    //cargarMotorDeBusqueda(DICCIONARIO, &arbol);
+    //mostrarArbol(arbol);
 
     return 0;
 }
@@ -195,15 +195,12 @@ void cargarDiccionario(termino arr[], int *validos)
         {
             pos = 0;
             pasarTerminosArchivo(arr, *validos, cantDoc);
+            cantDoc++;
         }
         printf("cant doc: %d" ,cantDoc);
         printf("\nCargar otro archivo? S/N: ");
         fflush(stdin);
         scanf("%c", &seguir);
-        if (flag == 0)
-        {
-            cantDoc++;
-        }
 
         memset(nombreArchivo, 0, sizeof(nombreArchivo));
     }
@@ -436,7 +433,16 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
     char palabra[20];
     int cantDoc = 0;
 
-    cargarMotorDeBusqueda(DICCIONARIO, arbol);
+    FILE* check = fopen(DICCIONARIO, "rb");
+
+    //COMPRUEBA QUE EL ARCHIVO "DICCIONARIO" HAYA SIDO CREADO ANTES DE CARGARLO EN EL MOTOR DE BUSQUEDA.
+    if(check != NULL)
+    {
+        cargarMotorDeBusqueda(DICCIONARIO, arbol);
+    }
+
+    fclose(check);
+
     do
     {
         system("cls");
