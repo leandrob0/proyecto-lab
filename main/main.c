@@ -14,6 +14,7 @@
 #define DICCIONARIO "diccionario.bin"
 #define ARCHIVOID "ids.bin"
 #define CANT_MAX 200000
+
 typedef struct
 {
     char palabra[20];
@@ -38,7 +39,11 @@ typedef struct nodoA
 } nodoA;
 
 /**
+#############################################################
+
     PROTOTIPADO
+
+#############################################################
 */
 
 nodoT *crearNodoOcurrencias(termino palabra);
@@ -52,17 +57,37 @@ void pasarTerminosArchivo(termino *terminos, int validos, int idDoc);
 void cargarMotorDeBusqueda(char *nombreArchivo, nodoA **lista);
 int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra);
 void mostrarArbol(nodoA *arbol);
+<<<<<<< HEAD
 void verLista(nodoT *lista, int *idsArchivo, int validos);
 void buscarNodo(nodoA *arbol, char *palabra, int *idArchivo, int validos);
 int retornarIdMayor(char *nombreArchivo);
 int verSiYaEstaLaId(int *IDs, int validos, int check);
 void BuscarPalabrasSimilares(nodoA *arbol, char *palabra);
+=======
+void verListaVariosID(nodoT *lista, int* idsArchivo, int validos);
+void buscarNodoVariosID(nodoA *arbol, char *palabra, int* idArchivo, int validos);
+int retornarIdMayor(char* nombreArchivo);
+int verSiYaEstaLaId(int* IDs, int validos, int check);
+int pedirVariosID(int id, int* archivoElegido);
+void verListaUnID(nodoT *lista, int idArchivo);
+void buscarNodoUnID(nodoA *arbol, char *palabra, int idArchivo);
+int pedirID();
+void pedirUnaPalabra(char* palabra);
+int pedirVariasPalabras(char palabras[5][20]);
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
 
 int menu();
 void funcionesMenu(termino *arr, int *validos, nodoA **arbol);
+
 /**
+<<<<<<< HEAD
 #######################################3
+=======
+#######################################
+
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
     MAIN
+
 #######################################
 */
 
@@ -105,18 +130,22 @@ nodoA *crearNodoPalabras(char *palabra)
 
     return nuevo;
 }
-/// carga un termino
+
 termino agregarTermino(termino t)
 {
     termino term;
-
     term = t;
 
     return term;
 }
 
+<<<<<<< HEAD
 /// Cargar el diccionario con los datos de los archivos
 void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
+=======
+/// FUNCION PRINCIPAL PARA CARGAR EL DICCIONARIO
+void cargarDiccionario(termino arr[], int *validos, char* archivoIds)
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
 {
     system("cls");
     char palabra[20];
@@ -129,7 +158,7 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
     int j = 0;
     char letra;
 
-    cantDoc = retornarIdMayor(ARCHIVOID);
+    cantDoc = retornarIdMayor(ARCHIVOID);//lleva la cuenta de cuantos archivos hay para asignarle un id al proximo archivo a cargar.
 
     if (cantDoc == -1)
     {
@@ -225,6 +254,7 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
     fclose(abrir);
 }
 
+///FUNCIONES DE INSERTAR EN LA LISTA|ARBOL
 void ingresarArbolOrdenado(nodoA **arbolDiccionario, char *palabra)
 {
 
@@ -245,7 +275,6 @@ void ingresarArbolOrdenado(nodoA **arbolDiccionario, char *palabra)
     }
 }
 
-/// CARGAR EN LA LISTA DE OCURRENCIAS DE EL NODO SELECCIONADO
 void cargaDeOcurrencias(nodoA **arbolDiccionario, termino t)
 {
     if (*arbolDiccionario != NULL)
@@ -299,6 +328,7 @@ void ingresarOcurrencia(nodoT **listaOcurrencias, termino t)
     }
 }
 
+///PASA LA LISTA DE TERMINOS A EL ARCHIVO DICCIONARIO
 void pasarTerminosArchivo(termino *terminos, int validos, int idDoc)
 {
     char nombreArchivo[20];
@@ -322,7 +352,7 @@ void pasarTerminosArchivo(termino *terminos, int validos, int idDoc)
     }
 }
 
-/// CARGA EL MOTOR DE BUSQUEDA.
+///GENERA EL MOTOR DE BUSQUEDA.
 void cargarMotorDeBusqueda(char *nombreArchivo, nodoA **lista)
 {
     FILE *fp = fopen(nombreArchivo, "rb");
@@ -350,7 +380,7 @@ void cargarMotorDeBusqueda(char *nombreArchivo, nodoA **lista)
     }
 }
 
-/// FUNCION QUE SE FIJA SI EL TERMINO YA ESTA AGREGADO EN EL ARBOL. retorna 1 si lo encontro y 0 si no
+///FUNCION AUXILIAR
 int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra)
 {
     if (arbolDiccionario != NULL)
@@ -377,6 +407,15 @@ int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra)
     }
 }
 
+/**
+#################################################################################################
+    FUNCIONES AUXILIARES MENU
+    FUNCIONES AUXILIARES MENU
+    FUNCIONES AUXILIARES MENU
+#################################################################################################
+*/
+
+///FUNCIONES MOSTRAR Y BUSCAR.
 void mostrarArbol(nodoA *arbol)
 {
     if (arbol != NULL)
@@ -387,7 +426,11 @@ void mostrarArbol(nodoA *arbol)
     }
 }
 
+<<<<<<< HEAD
 void verLista(nodoT *lista, int *idsArchivo, int validos)
+=======
+void verListaVariosID(nodoT *lista, int* idsArchivo, int validos)
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
 {
 
     while (lista != NULL)
@@ -406,34 +449,205 @@ void verLista(nodoT *lista, int *idsArchivo, int validos)
     }
 }
 
+<<<<<<< HEAD
 // recibe un arreglo de int en caso de que quiera buscar en varios archivos (varias IDS) y sus validos
 void buscarNodo(nodoA *arbol, char *palabra, int *idArchivo, int validos)
+=======
+void verListaUnID(nodoT *lista, int idArchivo)
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
 {
+    while (lista != NULL)
+    {
+        if(idArchivo == lista->idDOC)
+        {
+            printf("Documento ID:%d\n", lista->idDOC);
+            printf("posicion:%d\n", lista->pos);
+            printf("\n");
+        }
+        lista = lista->sig;
+    }
+}
 
+//recibe un arreglo de int en caso de que quiera buscar en varios archivos (varias IDS) y sus validos
+void buscarNodoVariosID(nodoA *arbol, char *palabra, int* idArchivo, int validos)
+{
     if (arbol)
     {
-
         if (strcmpi(arbol->palabra, palabra) == 0)
         {
-
-            verLista(arbol->ocurrencias, idArchivo, validos);
+            printf("PALABRA: %s", palabra);
+            printf("\n");
+            verListaVariosID(arbol->ocurrencias, idArchivo, validos);
         }
         else
         {
             if (strcmpi(arbol->palabra, palabra) > 0)
             {
-
-                buscarNodo(arbol->izq, palabra, idArchivo, validos);
+                buscarNodoVariosID(arbol->izq, palabra, idArchivo, validos);
             }
             else
             {
-
-                buscarNodo(arbol->der, palabra, idArchivo, validos);
+                buscarNodoVariosID(arbol->der, palabra, idArchivo, validos);
             }
         }
     }
 }
 
+<<<<<<< HEAD
+            verLista(arbol->ocurrencias, idArchivo, validos);
+=======
+void buscarNodoUnID(nodoA *arbol, char *palabra, int idArchivo)
+{
+
+    if (arbol)
+    {
+        if (strcmpi(arbol->palabra, palabra) == 0)
+        {
+            printf("\nPALABRA: %s", palabra);
+            printf("\n");
+            verListaUnID(arbol->ocurrencias, idArchivo);
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
+        }
+        else
+        {
+            if (strcmpi(arbol->palabra, palabra) > 0)
+            {
+                buscarNodoUnID(arbol->izq, palabra, idArchivo);
+            }
+            else
+            {
+                buscarNodoUnID(arbol->der, palabra, idArchivo);
+            }
+        }
+    }
+}
+
+///FUNCIONES PEDIR IDS Y PALABRAS
+int pedirVariosID(int id, int* archivoElegido)
+{
+    int i = 0;
+    char seguir = 's';
+
+    do
+    {
+        if(i == id + 1)
+        {
+            printf("Todos los archivos seleccionados.\n");
+
+            system("pause");
+            system("cls");
+
+            break;
+        }
+
+        int flag = 0;
+
+        do
+        {
+            int aux = 0;
+            printf("Ingrese el ID del archivo en el que desee buscar: ");
+            scanf("%i", &aux);
+
+            //checkea que no se pase dos veces la misma ID (bastante inutil ya que va a ser lo mismo pero bueno para hacerlo mas estricto)
+            int check = verSiYaEstaLaId(archivoElegido, i + 1, aux);
+            if(check == 1)
+            {
+                flag = 1;
+                printf("ID ya ingresada.\n");
+                system("pause");
+                system("cls");
+            }
+            else
+            {
+                archivoElegido[i] = aux;
+                flag = 0;
+            }
+        }
+        while(flag == 1 || archivoElegido[i] > id || archivoElegido < 0);
+
+        i++;
+        printf("\nDesea elegir otro archivo?(S/N): ");
+        fflush(stdin);
+        scanf("%c", &seguir);
+        system("cls");
+    }
+    while(tolower(seguir) == 's');
+
+    return i;
+}
+
+int pedirID()
+{
+    int id = retornarIdMayor(ARCHIVOID);
+    int aux = -1;
+
+    if(id == -1)
+    {
+        return aux;
+    }
+
+    do
+    {
+        printf("Ingrese el ID del archivo en el que desee buscar: ");
+        scanf("%i",&aux);
+    }
+    while(aux > id || aux < 0);
+
+    return aux;
+}
+
+void pedirUnaPalabra(char* palabra)
+{
+    do
+    {
+        printf("\n\nIngrese palabra que desea buscar: ");
+        fflush(stdin);
+        gets(palabra);
+    }
+    while(strcmpi(palabra,"") == 0);
+}
+
+int pedirVariasPalabras(char palabras[5][20])
+{
+    int validos = 0;
+    char seguir = 's';
+    char palabra[20];
+
+    do
+    {
+        do
+        {
+
+            memset(palabra,0,sizeof(palabra));
+
+            printf("Ingrese la palabra que desea buscar: ");
+            fflush(stdin);
+            gets(palabra);
+
+            strcpy(palabras[validos], palabra);
+
+        }while(strcmpi(palabra,"") == 0);
+
+        validos++;
+        if(validos == 5)
+        {
+            printf("Limite de palabras alcanzado.\n");
+            system("pause");
+            system("cls");
+            break;
+        }
+
+        printf("\nDesea cargar otra palabra?(S/N): ");
+        fflush(stdin);
+        scanf("%c", &seguir);
+        system("cls");
+
+    }while(tolower(seguir) == 's');
+
+    return validos;
+}
+
+<<<<<<< HEAD
 ///######################## punto 6 #################################################
 ///######################## punto 6 #################################################
 ///######################## punto 6 #################################################
@@ -509,6 +723,10 @@ void BuscarPalabrasSimilares(nodoA *arbol, char *palabra)
 
 /// RETORNA LA ULTIMA ID AGREGADA.
 int retornarIdMayor(char *nombreArchivo)
+=======
+///FUNCIONES AUXILIARES
+int retornarIdMayor(char* nombreArchivo)
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
 {
     FILE *fp = fopen(nombreArchivo, "rb");
     int id = 0;
@@ -542,6 +760,14 @@ int verSiYaEstaLaId(int *IDs, int validos, int check)
     return 0;
 }
 
+/**
+#################################################################################################
+    MENU
+    MENU
+    MENU
+#################################################################################################
+*/
+
 int menu()
 {
     int opcion = 0;
@@ -566,6 +792,7 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
     int opcion = 0;
     int id = 0;
     char palabra[20];
+    char palabras[5][20];
 
     FILE *check = fopen(DICCIONARIO, "rb");
 
@@ -594,17 +821,25 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
         case 2:
             system("cls");
 
+<<<<<<< HEAD
             /// COMO ESTA CONSIGNA PIDE SOLO BUSCAR EN UN ARCHIVO LE PIDE AL USUARIO EN CUAL QUIERE BUSCAR
             id = retornarIdMayor(ARCHIVOID);
             // si no hay archivos agregados al diccionario todavia sale.
 
             if (id == -1)
+=======
+            ///COMO ESTA CONSIGNA PIDE SOLO BUSCAR EN UN ARCHIVO LE PIDE AL USUARIO EN CUAL QUIERE BUSCAR
+            int id = pedirID();
+
+            if(id == -1)
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
             {
                 printf("No hay archivos agregados.\n");
                 system("pause");
                 break;
             }
 
+<<<<<<< HEAD
             do
             {
                 printf("Ingrese el ID del archivo en el que desee buscar: ");
@@ -614,8 +849,11 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             printf("\n\nIngrese palabra que desea buscar: ");
             fflush(stdin);
             gets(palabra);
+=======
+            pedirUnaPalabra(palabra);
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
 
-            buscarNodo(*arbol, palabra, archivoElegido, 1);
+            buscarNodoUnID(*arbol, palabra, id);
             memset(palabra, 0, sizeof(palabra));
 
             system("pause");
@@ -626,9 +864,9 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             system("cls");
 
             id = retornarIdMayor(ARCHIVOID);
-            int i = 0;
-            char seguir = 's';
+            int i = pedirVariosID(id, archivoElegido);
 
+<<<<<<< HEAD
             do
             {
                 if (i == id + 1)
@@ -637,18 +875,22 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
 
                     system("pause");
                     system("cls");
+=======
+            pedirUnaPalabra(palabra);
+            buscarNodoVariosID(*arbol, palabra, archivoElegido, i);
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
 
-                    break;
-                }
+            memset(palabra, 0, sizeof(palabra));
+            system("pause");
 
-                int flag = 0;
+            break;
+        case 4: //buscar varias palabras en UN archivo
+            system("cls");
 
-                do
-                {
-                    int aux = 0;
-                    printf("Ingrese el ID del archivo en el que desee buscar: ");
-                    scanf("%i", &aux);
+            int validos = pedirVariasPalabras(palabras);
+            id = pedirID();
 
+<<<<<<< HEAD
                     // checkea que no se pase dos veces la misma ID (bastante inutil ya que va a ser lo mismo pero bueno para hacerlo mas estricto)
                     int check = verSiYaEstaLaId(archivoElegido, i + 1, aux);
                     if (check == 1)
@@ -682,10 +924,24 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             }
 
             system("pause");
+=======
+            if(id == -1)
+            {
+                printf("No hay archivos cargados.\n");
+                system("pause");
+                break;
+            }
 
-            break;
-        case 4:
-            system("cls");
+            for(int i = 0; i < validos; i++)
+            {
+                strcpy(palabra,palabras[i]);
+>>>>>>> c4294212b04ed8f699e05be99ed6d0a229fa67df
+
+                buscarNodoUnID(*arbol,palabra, id);
+                system("pause");
+
+                memset(palabra, 0, sizeof(palabra));
+            }
 
             system("pause");
             break;
