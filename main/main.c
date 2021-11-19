@@ -165,7 +165,7 @@ void cargarDiccionario(termino arr[], int *validos, char* archivoIds)
         {
             flag = 0;
         }
-
+        //
         printf("nombre del archivo con su extencion: ");
         fflush(stdin);
         gets(nombreArchivo);
