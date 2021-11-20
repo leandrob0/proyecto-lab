@@ -68,6 +68,10 @@ void pedirUnaPalabra(char *palabra);
 int pedirVariasPalabras(char palabras[5][20]);
 int Levenshtein(char *s1, char *s2);
 void buscarPalabrasSimilares(nodoA *arbol, char *palabra);
+int buscarNodoUnIDYRetornar(nodoA* arbol, char* palabra[50], int idArchivo, int* posiciones);
+int buscarPosicionesFrase(nodoT *lista, int idArchivo, int* posiciones);
+int verSiSeEncontroLaFrase(int validos, int posicionesFrase[validos][200],  int* validosPosiciones);
+void buscarUnaFrase(nodoA* arbol);
 
 int menu();
 void funcionesMenu(termino *arr, int *validos, nodoA **arbol);
@@ -649,26 +653,198 @@ int verSiYaEstaLaId(int *IDs, int validos, int check)
     return 0;
 }
 
+/**
+#################################################################################################
+    PUNTO 4
+    PUNTO 4
+    PUNTO 4
+#################################################################################################
+*/
+
+int buscarNodoUnIDYRetornar(nodoA* arbol, char* palabra[50], int idArchivo, int* posiciones)
+{
+    int numero;
+
+    if (arbol)
+    {
+        if (strcmpi(arbol->palabra, palabra) == 0)
+        {
+            numero = buscarPosicionesFrase(arbol->ocurrencias, idArchivo, posiciones);
+        }
+        else
+        {
+            if (strcmpi(arbol->palabra, palabra) > 0)
+            {
+                return buscarNodoUnIDYRetornar(arbol->izq, palabra, idArchivo, posiciones);
+            }
+            else
+            {
+                return buscarNodoUnIDYRetornar(arbol->der, palabra, idArchivo, posiciones);
+            }
+        }
+    } else {
+        numero = 0;
+    }
+
+    return numero;
+}
+
+//llena el array con las posiciones de la palabra de la frase que pasemos por parametro para despues buscar.
+int buscarPosicionesFrase(nodoT *lista, int idArchivo, int* posiciones)
+{
+    int validos = 0;
+
+    while (lista != NULL)
+    {
+        if (idArchivo == lista->idDOC)
+        {
+            posiciones[validos] = lista->pos;
+            validos++;
+        }
+        lista = lista->sig;
+    }
+
+    return validos;
+}
+
+// FRASE      =     PALABRA[i]    |   PALABRA[i+1]    ...
+
+// POSICIONES       2400 *               600
+//                  1000                 2110
+//                  451                  2401 *
+//
+//  * es lo que va a buscar esta funcion, loopeando por cada palabra en el array 2d y buscando si la posicion es 1 mas que la palabra anterior
+
+int verSiSeEncontroLaFrase(int validos, int posicionesFrase[validos][200],  int* validosPosiciones)
+{
+    int found;
+
+    for(int row = 0; row < validos - 1; row++) //primera capa para una palabra
+    {
+        found = 0;
+        for(int col = 0; (col < validosPosiciones[row] ) && found == 0; col++) //segunda capa para la columna de posiciones
+        {
+            for(int colResto = 0; (colResto < validosPosiciones[row+1]) && found == 0; colResto++) //tercera capa para las columnas de la siguiente palabra
+            {
+                if(posicionesFrase[row][col] + 1 == posicionesFrase[row+1][colResto]) {
+                    found = 1;
+                }
+            }
+        }
+        if(found == 0) //si despues de haber escaneado toda la columna de la palabra y de su palabra siguiente, no encontro una posicion que le siga a la primera palabra, sale y retorna 0 (no encontrada);
+        {
+            break;
+        }
+    }
+
+    return found;
+}
+
+void buscarUnaFrase(nodoA* arbol)
+{
+    char frase[100];
+    char palabras[10][50];
+    int j = 0;
+    int ctrl = 0;
+
+    printf("Ingrese la frase que desea buscar: ");
+    fflush(stdin);
+    fgets(frase, sizeof(frase),stdin);
+
+    ///separa la frase en palabras.
+    for(int i = 0; i <= strlen(frase); i++)
+    {
+        //si encuentra un espacio o un caracter null le pone el caracter null a la palabra y busca otra.
+        if((frase[i] == ' ' && frase[i-1] != ' ') || (frase[i] == '\0' && frase[i-1] != ' '))
+        {
+            palabras[ctrl][j]='\0';
+            ctrl++;  //siguiente palabra
+            j=0;    //inicia el index en 0 para la siguiente palabra
+        }
+        else if(frase[i] != ' ' && frase[i] != '\0')
+        {
+            palabras[ctrl][j]= frase[i];
+            j++;
+        }
+    }
+
+    palabras[ctrl - 1][strlen(palabras[ctrl - 1]) - 1] = '\0'; //al parecer al final de la separacion inserta una nueva linea, asi que la saco. (estuve 10 anios haciendo esto)
+
+    int posiciones[200];
+    int posicionesFrase[ctrl][200];
+    int validosPosiciones[ctrl];
+    int validos = 0;
+    int check = 0;
+    int found = 0;
+    int ids = retornarIdMayor(ARCHIVOID) + 1;
+
+    ///BUSCA EN CADA UNO DE LOS ARCHIVOS SI ESTA LA FRASE.
+    for(int i = 0; i < ids; i++)
+    {
+        memset(posicionesFrase,0,sizeof(posicionesFrase));
+        memset(validosPosiciones,0,sizeof(validosPosiciones));
+
+        for(int z = 0; z < ctrl; z++)
+        {
+            ///HAY QUE VER PORQUE LA ULTIMA PALABRA SIEMPRE DA 0 HAY COMO UN SALTO DE LINEA RARO
+            validos = buscarNodoUnIDYRetornar(arbol, palabras[z], i, posiciones); //retorna la cantidad de posiciones de la palabra
+
+            if(validos != 0) { //significa que encontro almenos una ocurrencia de la palabra en el documento y llena un array de posiciones
+
+                for(int x = 0; x < validos; x++) //llenamos el arreglo 2d con las posiciones de la palabra
+                {
+                    posicionesFrase[z][x] = posiciones[x];
+                }
+
+                validosPosiciones[z] = validos;
+                memset(posiciones,0,sizeof(posiciones));
+            }
+        }
+        check = verSiSeEncontroLaFrase(ctrl, posicionesFrase, validosPosiciones); //busca la frase con los arrays cargados antes
+
+        if(check == 1) {
+            found = 1;
+            printf("La frase fue encontrada en el documento con ID: %i\n", i);
+            system("pause");
+        }
+    }
+
+    if(found == 0) {
+        printf("La frase no fue encontrada en ningun documento.\n");
+        system("pause");
+    }
+
+}
+
+
+/**
+#################################################################################################
+    FIN PUNTO 4
+    FIN PUNTO 4
+    FIN PUNTO 4
+#################################################################################################
+*/
+
 /*#################################################################################################
-    PUINTO 5
-    PUINTO 5
-    PUINTO 5
+    PUNTO 5
+    PUNTO 5
+    PUNTO 5
 #################################################################################################*/
 
 int maximoArbol(nodoA *arbol)
 {
-    // si el arbol tiene datos
+    // como no esta ordenado por frecuencia habria que checkear todo el arbol .
     if (arbol->der != NULL)
     {
         return maximoArbol(arbol->der);
     }
     else
     {
-
         return arbol->frecuencia;
     }
 }
-///puse esto como referencia solo para buscar en la sub lista la palabra en el idDoc que elija el usuario que mas se repite
+
+/**puse esto como referencia solo para buscar en la sub lista la palabra en el idDoc que elija el usuario que mas se repite
 
 int cantidad_epecies(nodito *Sublista){
     int i = 0;
@@ -676,7 +852,7 @@ int cantidad_epecies(nodito *Sublista){
         i = Sublista->dato.cantidad + i;
         Sublista = Sublista->sig;
     }
-      
+
     return i;
 }
 void especie_con_mas_canitidad(nodo *lista){
@@ -685,7 +861,7 @@ void especie_con_mas_canitidad(nodo *lista){
     int mayorCant = -1;
     while(lista != NULL){
         cant = cantidad_epecies(lista->animales);
-        
+
         if(mayorCant < cant){ //Falacia
             mayorCant = cant;
             mayor = lista;
@@ -694,7 +870,7 @@ void especie_con_mas_canitidad(nodo *lista){
     }
     mostrarNodo(mayor);
 }
-
+*/
 
 /*#################################################################################################
     FIN PUINTO 5
@@ -895,6 +1071,8 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
 
         case 5:
             system("cls");
+
+            buscarUnaFrase(*arbol);
 
             break;
         case 6:
