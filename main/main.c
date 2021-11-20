@@ -17,6 +17,12 @@
 typedef struct
 {
     char palabra[20];
+    int frecuencia;
+} pyf; //palabra y frecuencia
+
+typedef struct
+{
+    char palabra[20];
     int idDOC;
     int pos; // incrementa palabra por palabra, y no letra por letra
 } termino;
@@ -838,68 +844,35 @@ void buscarUnaFrase(nodoA *arbol)
     PUNTO 5
 #################################################################################################*/
 
-<<<<<<< HEAD
-=======
 int sumaIdDoc(nodoT *lista, int id)
 {
-
     int i = 0;
-    if (lista)
+    while (lista != NULL)
     {
-
-        while (lista != NULL)
+        if (lista->idDOC == id)
         {
-            if (lista->idDOC == id)
-            {
-                i++;
-            }
-            lista = lista->sig;
+            i++;
         }
+        lista = lista->sig;
     }
 
     return i;
 }
-int restoIdDoc(int frecuencia, int i)
+
+///0 QUEDA VACIO
+void palabrasYFrecuencias(nodoA* arbol, int idArchivo, pyf* palabrasFrecuencias, int* validos)
 {
-    int num = 0;
-    int aux = 0;
-    aux = frecuencia - i;
-    if (aux == 0)
+    if(arbol != NULL)
     {
-        return num = i;
-    }
-    else
-    {
-        return num = aux;
+        int freq = sumaIdDoc(arbol->ocurrencias, idArchivo);
+        palabrasYFrecuencias(arbol->izq, idArchivo, palabrasFrecuencias, validos);
+        palabrasYFrecuencias(arbol->der, idArchivo, palabrasFrecuencias, validos);
+        (*validos)++;
+
+        strcpy(palabrasFrecuencias[*validos].palabra, arbol->palabra);
+        palabrasFrecuencias[*validos].frecuencia = freq;
     }
 }
-void PalabraQueMasSeRepiteMotor(nodoA *arbol, int id)
-{
-    int i = 0;
-    int resto = 0;
-
-    if (arbol)
-    {
-        i = sumaIdDoc(arbol->ocurrencias, id);
-        resto = restoIdDoc(arbol->frecuencia, i);
-          if ( i > resto)
-        {
-            printf("i: %d\n", i);
-            printf("resto: %d\n", resto);
-            printf("\npalabra Definitiva:\npalabra repetida: %d\npalabra: %s\n", arbol->frecuencia, arbol->palabra);
-        
-        }
-
-        PalabraQueMasSeRepiteMotor(arbol->der, id);
-
-        PalabraQueMasSeRepiteMotor(arbol->izq, id);
-
-
-      
-
-    }
-}
->>>>>>> e094937a5b8602f964843488833db6a98b8e755c
 
 /*#################################################################################################
     FIN PUINTO 5
@@ -1106,12 +1079,30 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             break;
         case 6:
             system("cls");
-<<<<<<< HEAD
 
-=======
-            PalabraQueMasSeRepiteMotor(*arbol, 0);
+            pyf palabrasFrecuencias[3000];
+            int validosFrecuencias = 0;
+            id = retornarIdMayor(ARCHIVOID) + 1;
+
+            for(int j = 0; j < id; j++)
+            {
+                palabrasYFrecuencias(*arbol, j, palabrasFrecuencias, &validosFrecuencias);
+                pyf max = palabrasFrecuencias[1];
+
+                for(int i = 2; i <= validosFrecuencias; i++)
+                {
+                    if(palabrasFrecuencias[i].frecuencia > max.frecuencia)
+                    {
+                        max = palabrasFrecuencias[i];
+                    }
+                }
+                printf("MAX DOC %i: %s\nFRECUENCIA: %i\n\n",j, max.palabra, max.frecuencia);
+                memset(palabrasFrecuencias,0,sizeof(palabrasFrecuencias));
+                validosFrecuencias = 0;
+            }
+
             system("pause");
->>>>>>> e094937a5b8602f964843488833db6a98b8e755c
+
             break;
         case 7:
             system("cls");
