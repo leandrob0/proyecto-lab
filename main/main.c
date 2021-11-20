@@ -831,46 +831,6 @@ void buscarUnaFrase(nodoA* arbol)
     PUNTO 5
 #################################################################################################*/
 
-int maximoArbol(nodoA *arbol)
-{
-    // como no esta ordenado por frecuencia habria que checkear todo el arbol .
-    if (arbol->der != NULL)
-    {
-        return maximoArbol(arbol->der);
-    }
-    else
-    {
-        return arbol->frecuencia;
-    }
-}
-
-/**puse esto como referencia solo para buscar en la sub lista la palabra en el idDoc que elija el usuario que mas se repite
-
-int cantidad_epecies(nodito *Sublista){
-    int i = 0;
-    while(Sublista != NULL){
-        i = Sublista->dato.cantidad + i;
-        Sublista = Sublista->sig;
-    }
-
-    return i;
-}
-void especie_con_mas_canitidad(nodo *lista){
-    nodo *mayor;
-    int cant = 0;
-    int mayorCant = -1;
-    while(lista != NULL){
-        cant = cantidad_epecies(lista->animales);
-
-        if(mayorCant < cant){ //Falacia
-            mayorCant = cant;
-            mayor = lista;
-        }
-        lista = lista->sig;
-    }
-    mostrarNodo(mayor);
-}
-*/
 
 /*#################################################################################################
     FIN PUINTO 5
@@ -1013,7 +973,7 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             system("cls");
 
             /// COMO ESTA CONSIGNA PIDE SOLO BUSCAR EN UN ARCHIVO LE PIDE AL USUARIO EN CUAL QUIERE BUSCAR
-            int id = pedirID();
+            id = pedirID();
 
             if (id == -1)
             {
@@ -1078,12 +1038,9 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
         case 6:
             system("cls");
 
-
-            system("pause");
             break;
         case 7:
             system("cls");
-            char palabra[20];
 
             printf("Palabra: ");
             fflush(stdin);
