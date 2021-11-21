@@ -6,13 +6,13 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <alg.h>
+#include "gotoxy.h"
 /**
     ESTRUCTURAS Y CONSTANTES A UTILIZAR
 */
 
 #define DICCIONARIO "diccionario.bin"
 #define ARCHIVOID "ids.bin"
-#define CANT_MAX 200000
 
 typedef struct
 {
@@ -86,6 +86,16 @@ void buscarPalabrasSimilares(nodoA *arbol, char *palabra); // punto 6
 int menu();
 void funcionesMenu(termino *arr, int *validos, nodoA **arbol);
 
+
+
+
+///###################################################
+///###############    EXTRA    #######################
+///###################################################
+///###################################################
+
+void animation();
+
 /**
 #######################################
 
@@ -101,9 +111,7 @@ int main()
     int validos = 0;
 
     funcionesMenu(arr, &validos, &arbol);
-    // cargarDiccionario(arr, &validos);
-    // cargarMotorDeBusqueda(DICCIONARIO, &arbol);
-    // mostrarArbol(arbol);
+
 
     return 0;
 }
@@ -111,6 +119,11 @@ int main()
 /**
     FUNCIONES CREAR NODOS
 */
+///################################################################################
+///################################################################################
+///##########################       PUNTO 1    ####################################
+///################################################################################
+///################################################################################
 
 nodoT *crearNodoOcurrencias(termino palabra)
 {
@@ -226,6 +239,7 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
             }
 
             fclose(fp);
+
         }
         else
         {
@@ -235,13 +249,17 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
         }
         /// RESETEA LA POSICION AL CAMBIAR DE DOCUMENTO
         if (flag == 0)
-        {
+        {   
+            system("cls");
+            printf("\n");
+            animation();
+            printf("\n");
             pos = 0;
             pasarTerminosArchivo(arr, *validos, cantDoc);
             fwrite(&cantDoc, sizeof(int), 1, abrir);
             cantDoc++;
         }
-        printf("cant doc: %d", cantDoc);
+        system("cls");
         printf("\nCargar otro archivo? S/N: ");
         fflush(stdin);
         scanf("%c", &seguir);
@@ -377,7 +395,19 @@ void cargarMotorDeBusqueda(char *nombreArchivo, nodoA **lista)
         printf("Error al abrir el archivo.\n");
     }
 }
+///################################################################################
+///################################################################################
+///##########################   FIN PUNTO 1    ####################################
+///################################################################################
+///################################################################################
 
+
+
+///################################################################################
+///################################################################################
+///##########################    PUNTO 2       ####################################
+///################################################################################
+///################################################################################
 /// FUNCION AUXILIAR
 int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra)
 {
@@ -550,6 +580,7 @@ int pedirVariosID(int id, int *archivoElegido)
         } while (flag == 1 || archivoElegido[i] > id || archivoElegido < 0);
 
         i++;
+        system("cls");
         printf("\nDesea elegir otro archivo?(S/N): ");
         fflush(stdin);
         scanf("%c", &seguir);
@@ -663,13 +694,13 @@ int verSiYaEstaLaId(int *IDs, int validos, int check)
     return 0;
 }
 
-/**
-#################################################################################################
+
+
+/**#################################################################################################
     PUNTO 4
     PUNTO 4
     PUNTO 4
-#################################################################################################
-*/
+#################################################################################################*/
 
 int buscarNodoUnIDYRetornar(nodoA *arbol, char *palabra, int idArchivo, int *posiciones)
 {
@@ -1130,4 +1161,30 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             break;
         }
     } while (repite);
+}
+
+
+
+
+
+
+
+void animation(){
+
+    
+    gotoxy(29,10);printf("******************************************************************\n");
+    gotoxy(29,11);printf("****************************CARGANDO******************************\n");
+    gotoxy(29,12);printf("******************************************************************\n");
+
+ 
+    for (int i = 0; i < 62; i++)
+    {
+        int cont = i*1;
+        
+   
+        Sleep(010);
+        gotoxy(29+i+1,14);printf("%c",219);
+        gotoxy(60,15);printf("%%%d", cont+ 39);
+    }
+  
 }
