@@ -18,7 +18,7 @@ typedef struct
 {
     char palabra[20];
     int frecuencia;
-} pyf; //palabra y frecuencia
+} pyf; // palabra y frecuencia
 
 typedef struct
 {
@@ -77,7 +77,8 @@ int buscarPosicionesFrase(nodoT *lista, int idArchivo, int *posiciones);
 int verSiSeEncontroLaFrase(int validos, int posicionesFrase[][200], int *validosPosiciones);
 void buscarUnaFrase(nodoA *arbol);
 
-void PalabraQueMasSeRepiteMotor(nodoA *arbol, int id); // punto 5
+int sumaIdDoc(nodoT *lista, int id);                                                            // punto 5
+void palabrasYFrecuencias(nodoA *arbol, int idArchivo, pyf *palabrasFrecuencias, int *validos); // punto 5
 
 int Levenshtein(char *s1, char *s2);                       // punto 6
 void buscarPalabrasSimilares(nodoA *arbol, char *palabra); // punto 6
@@ -859,10 +860,10 @@ int sumaIdDoc(nodoT *lista, int id)
     return i;
 }
 
-///0 QUEDA VACIO
-void palabrasYFrecuencias(nodoA* arbol, int idArchivo, pyf* palabrasFrecuencias, int* validos)
+/// 0 QUEDA VACIO
+void palabrasYFrecuencias(nodoA *arbol, int idArchivo, pyf *palabrasFrecuencias, int *validos)
 {
-    if(arbol != NULL)
+    if (arbol != NULL)
     {
         int freq = sumaIdDoc(arbol->ocurrencias, idArchivo);
         palabrasYFrecuencias(arbol->izq, idArchivo, palabrasFrecuencias, validos);
@@ -1083,22 +1084,30 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             pyf palabrasFrecuencias[3000];
             int validosFrecuencias = 0;
             id = retornarIdMayor(ARCHIVOID) + 1;
+            int idDOC = 0;
 
-            for(int j = 0; j < id; j++)
+            printf("Ingrese ID: ");
+            scanf("%d", &idDOC);
+
+            if (idDOC <= id)
             {
-                palabrasYFrecuencias(*arbol, j, palabrasFrecuencias, &validosFrecuencias);
+                palabrasYFrecuencias(*arbol, idDOC, palabrasFrecuencias, &validosFrecuencias);
                 pyf max = palabrasFrecuencias[1];
 
-                for(int i = 2; i <= validosFrecuencias; i++)
+                for (int i = 2; i <= validosFrecuencias; i++)
                 {
-                    if(palabrasFrecuencias[i].frecuencia > max.frecuencia)
+                    if (palabrasFrecuencias[i].frecuencia > max.frecuencia)
                     {
                         max = palabrasFrecuencias[i];
                     }
                 }
-                printf("MAX DOC %i: %s\nFRECUENCIA: %i\n\n",j, max.palabra, max.frecuencia);
-                memset(palabrasFrecuencias,0,sizeof(palabrasFrecuencias));
+                printf("ID DOC %i\nPalabra: %s\nFRECUENCIA: %i\n\n", idDOC, max.palabra, max.frecuencia);
+                memset(palabrasFrecuencias, 0, sizeof(palabrasFrecuencias));
                 validosFrecuencias = 0;
+            }
+            else
+            {
+                printf("El ID no existe!.\n");
             }
 
             system("pause");
