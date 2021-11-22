@@ -6,19 +6,22 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <alg.h>
+#include "gotoxy.h"
 /**
     ESTRUCTURAS Y CONSTANTES A UTILIZAR
 */
-
+#define COPYRIGHT "| Copyright 2021  Leandro Bovino - Jonathan Alvarez -UTNMDP |"
 #define DICCIONARIO "diccionario.bin"
 #define ARCHIVOID "ids.bin"
-#define CANT_MAX 200000
+/**
+    FIN ESTRUCTURAS Y CONSTANTES A UTILIZAR
+*/
 
 typedef struct
 {
     char palabra[20];
     int frecuencia;
-} pyf; //palabra y frecuencia
+} pyf; // palabra y frecuencia
 
 typedef struct
 {
@@ -77,7 +80,8 @@ int buscarPosicionesFrase(nodoT *lista, int idArchivo, int *posiciones);
 int verSiSeEncontroLaFrase(int validos, int posicionesFrase[][200], int *validosPosiciones);
 void buscarUnaFrase(nodoA *arbol);
 
-void PalabraQueMasSeRepiteMotor(nodoA *arbol, int id); // punto 5
+int sumaIdDoc(nodoT *lista, int id);                                                            // punto 5
+void palabrasYFrecuencias(nodoA *arbol, int idArchivo, pyf *palabrasFrecuencias, int *validos); // punto 5
 
 int Levenshtein(char *s1, char *s2);                       // punto 6
 void buscarPalabrasSimilares(nodoA *arbol, char *palabra); // punto 6
@@ -85,6 +89,16 @@ void buscarPalabrasSimilares(nodoA *arbol, char *palabra); // punto 6
 int menu();
 void funcionesMenu(termino *arr, int *validos, nodoA **arbol);
 
+///###################################################
+///###############    EXTRA    #######################
+///###################################################
+///###################################################
+
+void animation();
+void cargandoError();
+void marcoConsola();
+void logo();
+void copy();
 /**
 #######################################
 
@@ -95,14 +109,12 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol);
 
 int main()
 {
+    system("color 3F ");
     nodoA *arbol = NULL;
     termino arr[70000];
     int validos = 0;
 
     funcionesMenu(arr, &validos, &arbol);
-    // cargarDiccionario(arr, &validos);
-    // cargarMotorDeBusqueda(DICCIONARIO, &arbol);
-    // mostrarArbol(arbol);
 
     return 0;
 }
@@ -110,6 +122,11 @@ int main()
 /**
     FUNCIONES CREAR NODOS
 */
+///################################################################################
+///################################################################################
+///##########################       PUNTO 1    ####################################
+///################################################################################
+///################################################################################
 
 nodoT *crearNodoOcurrencias(termino palabra)
 {
@@ -144,7 +161,6 @@ termino agregarTermino(termino t)
 /// FUNCION PRINCIPAL PARA CARGAR EL DICCIONARIO
 void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
 {
-    system("cls");
     char palabra[20];
     char seguir = 's';
     memset(palabra, 0, sizeof(palabra));
@@ -171,9 +187,12 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
     while (seguir == 's')
     {
         system("cls");
+        marcoConsola();
+        copy();
         char nombreArchivo[50];
         if (cantDoc > 0 && flag == 0)
         {
+            gotoxy(4, 3);
             printf("Archivos cargados: %d\n\n", cantDoc);
         }
         if (flag == 1)
@@ -181,6 +200,7 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
             flag = 0;
         }
         //
+        gotoxy(35, 13);
         printf("nombre del archivo con su extencion: ");
         fflush(stdin);
         gets(nombreArchivo);
@@ -230,19 +250,34 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
         {
             flag = 1;
             system("cls");
-            printf("El archivo no existe. Por favor, vuelva a intentarlo.");
+            marcoConsola();
+            copy();
+            cargandoError();
+            gotoxy(35, 13);
+            printf("El archivo no existe. Por favor, vuelva a intentarlo.\n\n");
+            system("pause");
         }
         /// RESETEA LA POSICION AL CAMBIAR DE DOCUMENTO
         if (flag == 0)
         {
+            system("cls");
+            marcoConsola();
+            copy();
+            printf("\n");
+            animation();
+            printf("\n");
             pos = 0;
             pasarTerminosArchivo(arr, *validos, cantDoc);
             fwrite(&cantDoc, sizeof(int), 1, abrir);
             cantDoc++;
         }
-        printf("cant doc: %d", cantDoc);
-        printf("\nCargar otro archivo? S/N: ");
+        system("cls");
+        marcoConsola();
+        copy();
+            gotoxy(40, 13);
+            printf("%cDesea cargar otro archivo? S/N: ", 168);
         fflush(stdin);
+        gotoxy(73, 13);
         scanf("%c", &seguir);
 
         memset(nombreArchivo, 0, sizeof(nombreArchivo));
@@ -376,7 +411,17 @@ void cargarMotorDeBusqueda(char *nombreArchivo, nodoA **lista)
         printf("Error al abrir el archivo.\n");
     }
 }
+///################################################################################
+///################################################################################
+///##########################   FIN PUNTO 1    ####################################
+///################################################################################
+///################################################################################
 
+///################################################################################
+///################################################################################
+///##########################    PUNTO 2       ####################################
+///################################################################################
+///################################################################################
 /// FUNCION AUXILIAR
 int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra)
 {
@@ -549,6 +594,7 @@ int pedirVariosID(int id, int *archivoElegido)
         } while (flag == 1 || archivoElegido[i] > id || archivoElegido < 0);
 
         i++;
+        system("cls");
         printf("\nDesea elegir otro archivo?(S/N): ");
         fflush(stdin);
         scanf("%c", &seguir);
@@ -662,13 +708,11 @@ int verSiYaEstaLaId(int *IDs, int validos, int check)
     return 0;
 }
 
-/**
-#################################################################################################
+/**#################################################################################################
     PUNTO 4
     PUNTO 4
     PUNTO 4
-#################################################################################################
-*/
+#################################################################################################*/
 
 int buscarNodoUnIDYRetornar(nodoA *arbol, char *palabra, int idArchivo, int *posiciones)
 {
@@ -825,10 +869,10 @@ int sumaIdDoc(nodoT *lista, int id)
     return i;
 }
 
-///0 QUEDA VACIO
-void palabrasYFrecuencias(nodoA* arbol, int idArchivo, pyf* palabrasFrecuencias, int* validos)
+/// 0 QUEDA VACIO
+void palabrasYFrecuencias(nodoA *arbol, int idArchivo, pyf *palabrasFrecuencias, int *validos)
 {
-    if(arbol != NULL)
+    if (arbol != NULL)
     {
         int freq = sumaIdDoc(arbol->ocurrencias, idArchivo);
         palabrasYFrecuencias(arbol->izq, idArchivo, palabrasFrecuencias, validos);
@@ -930,16 +974,30 @@ void buscarPalabrasSimilares(nodoA *arbol, char *palabra)
 int menu()
 {
     int opcion = 0;
-
+    marcoConsola();
+    gotoxy(58, 28);
+    printf(COPYRIGHT);
+    logo();
+    dibujarCuadro(32, 16, 88, 26);
+    gotoxy(35, 17);
     printf("[1]Escanear archivos\n");
+    gotoxy(35, 18);
     printf("[2]Ver termino en un solo archivo\n");
+    gotoxy(35, 19);
     printf("[3]Ver termino en varios archivos\n");
+    gotoxy(35, 20);
     printf("[4]Buscar mas de un termino en un documento\n");
+    gotoxy(35, 21);
     printf("[5]Buscar una frase completa\n");
+    gotoxy(35, 22);
     printf("[6]Buscar palabra que mas se repite en un documento\n");
+    gotoxy(35, 23);
     printf("[7]buscar palabras similares\n");
+    gotoxy(35, 24);
     printf("[8]Salir\n");
-    printf("Opcion: ");
+    gotoxy(53, 25);
+    printf("OPCION: ");
+    gotoxy(60, 25);
     scanf("%d", &opcion);
     return opcion;
 }
@@ -973,13 +1031,16 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
         switch (opcion)
         {
         case 1:
+            system("cls");
+            marcoConsola();
             cargarDiccionario(arr, validos, ARCHIVOID); // ojo con cargar muchas veces el archivo, cargarlo 1 vez y comentar esta linea
             cargarMotorDeBusqueda(DICCIONARIO, arbol);
             break;
 
         case 2:
             system("cls");
-
+            marcoConsola();
+            copy();
             /// COMO ESTA CONSIGNA PIDE SOLO BUSCAR EN UN ARCHIVO LE PIDE AL USUARIO EN CUAL QUIERE BUSCAR
             id = pedirID();
 
@@ -1001,7 +1062,9 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
 
         case 3:
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             id = retornarIdMayor(ARCHIVOID);
             int i = pedirVariosID(id, archivoElegido);
 
@@ -1014,7 +1077,9 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             break;
         case 4: // buscar varias palabras en UN archivo
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             int validos = pedirVariasPalabras(palabras);
             id = pedirID();
 
@@ -1039,32 +1104,44 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
 
         case 5:
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             buscarUnaFrase(*arbol);
 
             break;
         case 6:
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             pyf palabrasFrecuencias[3000];
             int validosFrecuencias = 0;
             id = retornarIdMayor(ARCHIVOID) + 1;
+            int idDOC = 0;
 
-            for(int j = 0; j < id; j++)
+            printf("Ingrese ID: ");
+            scanf("%d", &idDOC);
+
+            if (idDOC <= id)
             {
-                palabrasYFrecuencias(*arbol, j, palabrasFrecuencias, &validosFrecuencias);
+                palabrasYFrecuencias(*arbol, idDOC, palabrasFrecuencias, &validosFrecuencias);
                 pyf max = palabrasFrecuencias[1];
 
-                for(int i = 2; i <= validosFrecuencias; i++)
+                for (int i = 2; i <= validosFrecuencias; i++)
                 {
-                    if(palabrasFrecuencias[i].frecuencia > max.frecuencia)
+                    if (palabrasFrecuencias[i].frecuencia > max.frecuencia)
                     {
                         max = palabrasFrecuencias[i];
                     }
                 }
-                printf("MAX DOC %i: %s\nFRECUENCIA: %i\n\n",j, max.palabra, max.frecuencia);
-                memset(palabrasFrecuencias,0,sizeof(palabrasFrecuencias));
+                printf("ID DOC %i\nPalabra: %s\nFRECUENCIA: %i\n\n", idDOC, max.palabra, max.frecuencia);
+                memset(palabrasFrecuencias, 0, sizeof(palabrasFrecuencias));
                 validosFrecuencias = 0;
+            }
+            else
+            {
+                printf("El ID no existe!.\n");
             }
 
             system("pause");
@@ -1072,7 +1149,9 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             break;
         case 7:
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             printf("Palabra: ");
             fflush(stdin);
             gets(palabra);
@@ -1087,4 +1166,61 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             break;
         }
     } while (repite);
+}
+
+void animation()
+{
+
+    gotoxy(29, 10);
+    printf("******************************************************************\n");
+    gotoxy(29, 11);
+    printf("****************************CARGANDO******************************\n");
+    gotoxy(29, 12);
+    printf("******************************************************************\n");
+
+    for (int i = 0; i < 62; i++)
+    {
+        int cont = i * 1;
+
+        Sleep(010);
+        gotoxy(29 + i + 1, 14);
+        printf("%c", 219);
+        gotoxy(60, 15);
+        printf("%%%d", cont + 39);
+    }
+}
+void marcoConsola()
+{ // para no andar modificando individualmente en cada menu
+    dibujarCuadro(0, 0, 119, 28);
+}
+void cargandoError()
+{ // ANIMATIONS
+    system("cls");
+    gotoxy(30, 10);
+    printf("**************************************************************\n");
+    gotoxy(30, 11);
+    printf("************************CARGA FALLIDA*************************\n");
+    gotoxy(30, 12);
+    printf("**************************************************************\n");
+
+    printf("\n\n");
+}
+void logo()
+{
+
+    gotoxy(27, 6);
+    printf(" dP88b8 88   88 88     88   88     dP88b8 88   88 88     88   88 ");
+    gotoxy(27, 7);
+    printf("dP      88   88 88     88   88    dP      88   88 88     88   88 ");
+    gotoxy(27, 8);
+    printf("Yb  888 Y8   8P 88  oo Y8   8P    Yb  888 Y8   8P 88  oo Y8   8P ");
+    gotoxy(27, 9);
+    printf(" YboodP  YbodP  88ood8  YbodP      YboodP  YbodP  88ood8  YbodP  ");
+}
+
+void copy()
+{
+
+    gotoxy(58, 28);
+    printf(COPYRIGHT);
 }
