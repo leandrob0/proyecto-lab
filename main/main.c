@@ -509,7 +509,7 @@ void verListaUnID(nodoT *lista, int idArchivo)
         lista = lista->sig;
         i++;
     }
-    
+
 
 }
 
@@ -521,8 +521,8 @@ void buscarNodoVariosID(nodoA *arbol, char *palabra, int *idArchivo, int validos
         if (strcmpi(arbol->palabra, palabra) == 0)
         {
             printf("PALABRA: %s", palabra);
-            
-            
+
+
             verListaVariosID(arbol->ocurrencias, idArchivo, validos);
         }
         else
@@ -540,7 +540,7 @@ void buscarNodoVariosID(nodoA *arbol, char *palabra, int *idArchivo, int validos
 }
 
 void buscarNodoUnID(nodoA *arbol, char *palabra, int idArchivo)
-{   
+{
 
     if (arbol)
     {
@@ -1055,12 +1055,149 @@ int menu()
     return opcion;
 }
 
+///
+///FUNCIONES PUNTOS
+void puntoCero(termino *arr, int *validos, nodoA **arbol)
+{
+    marcoConsola();
+    cargarDiccionario(arr, validos, ARCHIVOID); // ojo con cargar muchas veces el archivo, cargarlo 1 vez y comentar esta linea
+    cargarMotorDeBusqueda(DICCIONARIO, arbol);
+}
+
+void puntoUno(nodoA *arbol, char *palabra)
+{
+    marcoConsola();
+    copy();
+    // COMO ESTA CONSIGNA PIDE SOLO BUSCAR EN UN ARCHIVO LE PIDE AL USUARIO EN CUAL QUIERE BUSCAR
+    int id = pedirID();
+
+    if (id == -1)
+    {
+        gotoxy(40, 13);
+        printf("No hay archivos agregados.\n");
+        gotoxy(35, 15);
+        system("pause");
+
+    } else {
+        pedirUnaPalabra(palabra);
+
+        buscarNodoUnID(arbol, palabra, id);
+        memset(palabra, 0, sizeof(palabra));
+
+        printf("\n\n\n");
+        getch();
+    }
+}
+
+void puntoDos(nodoA *arbol, char *palabra)
+{
+    marcoConsola();
+    gotoxy(58, 28);
+    printf(COPYRIGHT);
+    int id = retornarIdMayor(ARCHIVOID);
+    int archivoElegido[id + 1];
+    int i = pedirVariosID(id, archivoElegido);
+
+    pedirUnaPalabra(palabra);
+    buscarNodoVariosID(arbol, palabra, archivoElegido, i);
+
+    memset(palabra, 0, sizeof(palabra));
+    system("pause");
+}
+
+void puntoTres(nodoA *arbol, char *palabra,char palabras[][20])
+{
+    marcoConsola();
+    gotoxy(58, 28);
+    printf(COPYRIGHT);
+    int validos = pedirVariasPalabras(palabras);
+    int id = pedirID();
+
+    if (id == -1)
+    {
+        printf("No hay archivos cargados.\n");
+        system("pause");
+    } else {
+        for (int i = 0; i < validos; i++)
+        {
+            strcpy(palabra, palabras[i]);
+
+            buscarNodoUnID(arbol, palabra, id);
+            system("pause");
+
+            memset(palabra, 0, sizeof(palabra));
+        }
+    }
+}
+
+void puntoCuatro(nodoA *arbol)
+{
+    marcoConsola();
+    gotoxy(58, 28);
+    printf(COPYRIGHT);
+    buscarUnaFrase(arbol);
+}
+
+void puntoCinco(nodoA *arbol)
+{
+    marcoConsola();
+    gotoxy(58, 28);
+    printf(COPYRIGHT);
+    pyf palabrasFrecuencias[3000];
+    int validosFrecuencias = 0;
+    int id = retornarIdMayor(ARCHIVOID) + 1;
+    int idDOC = 0;
+
+    printf("Ingrese ID: ");
+    scanf("%d", &idDOC);
+
+    if (idDOC < id)
+    {
+        palabrasYFrecuencias(arbol, idDOC, palabrasFrecuencias, &validosFrecuencias);
+        pyf max = palabrasFrecuencias[1];
+
+        for (int i = 2; i <= validosFrecuencias; i++)
+        {
+            if (palabrasFrecuencias[i].frecuencia > max.frecuencia)
+            {
+                max = palabrasFrecuencias[i];
+            }
+        }
+        printf("ID DOC %i\nPalabra: %s\nFRECUENCIA: %i\n\n", idDOC, max.palabra, max.frecuencia);
+        memset(palabrasFrecuencias, 0, sizeof(palabrasFrecuencias));
+        validosFrecuencias = 0;
+    }
+    else
+    {
+        printf("El ID no existe!.\n");
+    }
+
+    system("pause");
+}
+
+void puntoSeis(nodoA *arbol, char *palabra)
+{
+    marcoConsola();
+    gotoxy(58, 28);
+    printf(COPYRIGHT);
+
+    printf("Palabra: ");
+    fflush(stdin);
+    gets(palabra);
+    printf("\n");
+
+    buscarPalabrasSimilares(arbol, palabra);
+
+    system("pause");
+}
+
+///FIN FUNCIONES POR PUNTOS
+
 void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
 {
 
     bool repite = true;
     int opcion = 0;
-    int id = 0;
     char palabra[20];
     char palabras[5][20];
 
@@ -1085,134 +1222,48 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
         {
         case 1:
             system("cls");
-            marcoConsola();
-            cargarDiccionario(arr, validos, ARCHIVOID); // ojo con cargar muchas veces el archivo, cargarlo 1 vez y comentar esta linea
-            cargarMotorDeBusqueda(DICCIONARIO, arbol);
+
+            puntoCero(arr, validos, arbol);
+
             break;
 
         case 2:
             system("cls");
-            marcoConsola();
-            copy();
-            /// COMO ESTA CONSIGNA PIDE SOLO BUSCAR EN UN ARCHIVO LE PIDE AL USUARIO EN CUAL QUIERE BUSCAR
-            id = pedirID();
 
-            if (id == -1)
-            {
-                gotoxy(40, 13);
-                printf("No hay archivos agregados.\n");
-                gotoxy(35, 15);
-                system("pause");
-                break;
-            }
+            puntoUno(*arbol, palabra);
 
-            pedirUnaPalabra(palabra);
-
-            buscarNodoUnID(*arbol, palabra, id);
-            memset(palabra, 0, sizeof(palabra));
-
-            printf("\n\n\n");
-            getch();
             break;
 
         case 3:
             system("cls");
-            marcoConsola();
-            gotoxy(58, 28);
-            printf(COPYRIGHT);
-            id = retornarIdMayor(ARCHIVOID);
-            int i = pedirVariosID(id, archivoElegido);
 
-            pedirUnaPalabra(palabra);
-            buscarNodoVariosID(*arbol, palabra, archivoElegido, i);
-
-            memset(palabra, 0, sizeof(palabra));
-            system("pause");
+            puntoDos(*arbol, palabra);
 
             break;
         case 4: // buscar varias palabras en UN archivo
             system("cls");
-            marcoConsola();
-            gotoxy(58, 28);
-            printf(COPYRIGHT);
-            int validos = pedirVariasPalabras(palabras);
-            id = pedirID();
 
-            if (id == -1)
-            {
-                printf("No hay archivos cargados.\n");
-                system("pause");
-                break;
-            }
-
-            for (int i = 0; i < validos; i++)
-            {
-                strcpy(palabra, palabras[i]);
-
-                buscarNodoUnID(*arbol, palabra, id);
-                system("pause");
-
-                memset(palabra, 0, sizeof(palabra));
-            }
+            puntoTres(*arbol, palabra,palabras);
 
             break;
 
         case 5:
             system("cls");
-            marcoConsola();
-            gotoxy(58, 28);
-            printf(COPYRIGHT);
-            buscarUnaFrase(*arbol);
+
+            puntoCuatro(*arbol);
 
             break;
         case 6:
             system("cls");
-            marcoConsola();
-            gotoxy(58, 28);
-            printf(COPYRIGHT);
-            pyf palabrasFrecuencias[3000];
-            int validosFrecuencias = 0;
-            id = retornarIdMayor(ARCHIVOID) + 1;
-            int idDOC = 0;
 
-            printf("Ingrese ID: ");
-            scanf("%d", &idDOC);
-
-            if (idDOC <= id)
-            {
-                palabrasYFrecuencias(*arbol, idDOC, palabrasFrecuencias, &validosFrecuencias);
-                pyf max = palabrasFrecuencias[1];
-
-                for (int i = 2; i <= validosFrecuencias; i++)
-                {
-                    if (palabrasFrecuencias[i].frecuencia > max.frecuencia)
-                    {
-                        max = palabrasFrecuencias[i];
-                    }
-                }
-                printf("ID DOC %i\nPalabra: %s\nFRECUENCIA: %i\n\n", idDOC, max.palabra, max.frecuencia);
-                memset(palabrasFrecuencias, 0, sizeof(palabrasFrecuencias));
-                validosFrecuencias = 0;
-            }
-            else
-            {
-                printf("El ID no existe!.\n");
-            }
-
-            system("pause");
+            puntoCinco(*arbol);
 
             break;
         case 7:
             system("cls");
-            marcoConsola();
-            gotoxy(58, 28);
-            printf(COPYRIGHT);
-            printf("Palabra: ");
-            fflush(stdin);
-            gets(palabra);
-            printf("\n");
-            buscarPalabrasSimilares(*arbol, palabra);
-            system("pause");
+
+            puntoSeis(&arbol, palabra);
+
             break;
         case 8:
             repite = false;
