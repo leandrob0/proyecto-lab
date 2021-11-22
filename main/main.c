@@ -701,7 +701,7 @@ int buscarNodoUnIDYRetornar(nodoA *arbol, char *palabra, int idArchivo, int *pos
 }
 
 // llena el array con las posiciones de la palabra de la frase que pasemos por parametro para despues buscar.
-int buscarPosicionesFrase(nodoT *lista, int idArchivo, int *posiciones)
+int buscarPosicionesPrimeraPalabra(nodoT *lista, int idArchivo, int *posiciones)
 {
     int validos = 0;
 
@@ -716,40 +716,6 @@ int buscarPosicionesFrase(nodoT *lista, int idArchivo, int *posiciones)
     }
 
     return validos;
-}
-
-// FRASE      =     PALABRA[i]    |   PALABRA[i+1]    ...
-
-// POSICIONES       2400 *               600
-//                  1000                 2110
-//                  451                  2401 *
-//
-//  * es lo que va a buscar esta funcion, loopeando por cada palabra en el array 2d y buscando si la posicion es 1 mas que la palabra anterior
-
-int verSiSeEncontroLaFrase(int validos, int posicionesFrase[][200], int *validosPosiciones)
-{
-    int found;
-
-    for (int row = 0; row < validos - 1; row++) // primera capa para una palabra
-    {
-        found = 0;
-        for (int col = 0; (col < validosPosiciones[row]) && found == 0; col++) // segunda capa para la columna de posiciones
-        {
-            for (int colResto = 0; (colResto < validosPosiciones[row + 1]) && found == 0; colResto++) // tercera capa para las columnas de la siguiente palabra
-            {
-                if (posicionesFrase[row][col] + 1 == posicionesFrase[row + 1][colResto])
-                {
-                    found = 1;
-                }
-            }
-        }
-        if (found == 0) // si despues de haber escaneado toda la columna de la palabra y de su palabra siguiente, no encontro una posicion que le siga a la primera palabra, sale y retorna 0 (no encontrada);
-        {
-            break;
-        }
-    }
-
-    return found;
 }
 
 void buscarUnaFrase(nodoA *arbol)
