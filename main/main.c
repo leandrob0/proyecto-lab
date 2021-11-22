@@ -274,8 +274,8 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
         system("cls");
         marcoConsola();
         copy();
-            gotoxy(40, 13);
-            printf("%cDesea cargar otro archivo? S/N: ", 168);
+        gotoxy(40, 13);
+        printf("%cDesea cargar otro archivo? S/N: ", 168);
         fflush(stdin);
         gotoxy(73, 13);
         scanf("%c", &seguir);
@@ -489,16 +489,28 @@ void verListaVariosID(nodoT *lista, int *idsArchivo, int validos)
 
 void verListaUnID(nodoT *lista, int idArchivo)
 {
+    int i = 1;
+    dibujarCuadro(1,3,50, 5);
+    gotoxy(32, 4);printf("Documento ID:%d\n", lista->idDOC);
+    gotoxy(2, 6);printf("posicion: ");
     while (lista != NULL)
     {
         if (idArchivo == lista->idDOC)
         {
-            printf("Documento ID:%d\n", lista->idDOC);
-            printf("posicion:%d\n", lista->pos);
-            printf("\n");
+            printf("%d |", lista->pos);
         }
+        if(i == 15){
+            printf("\n");
+            printf("\t    ");
+            i = 0;
+        }
+
+
         lista = lista->sig;
+        i++;
     }
+    
+
 }
 
 // recibe un arreglo de int en caso de que quiera buscar en varios archivos (varias IDS) y sus validos
@@ -509,7 +521,8 @@ void buscarNodoVariosID(nodoA *arbol, char *palabra, int *idArchivo, int validos
         if (strcmpi(arbol->palabra, palabra) == 0)
         {
             printf("PALABRA: %s", palabra);
-            printf("\n");
+            
+            
             verListaVariosID(arbol->ocurrencias, idArchivo, validos);
         }
         else
@@ -527,14 +540,15 @@ void buscarNodoVariosID(nodoA *arbol, char *palabra, int *idArchivo, int validos
 }
 
 void buscarNodoUnID(nodoA *arbol, char *palabra, int idArchivo)
-{
+{   
 
     if (arbol)
     {
+
         if (strcmpi(arbol->palabra, palabra) == 0)
         {
-            printf("\nPALABRA: %s", palabra);
-            printf("\n");
+            gotoxy(2, 4);printf("PALABRA: %s", palabra);
+
             verListaUnID(arbol->ocurrencias, idArchivo);
         }
         else
@@ -616,6 +630,7 @@ int pedirID()
 
     do
     {
+        gotoxy(35, 13);
         printf("Ingrese el ID del archivo en el que desee buscar: ");
         scanf("%i", &aux);
     } while (aux > id || aux < 0);
@@ -627,7 +642,11 @@ void pedirUnaPalabra(char *palabra)
 {
     do
     {
-        printf("\n\nIngrese palabra que desea buscar: ");
+        system("cls");
+        marcoConsola();
+        copy();
+        gotoxy(5, 2);
+        printf("Ingrese palabra que desea buscar: ");
         fflush(stdin);
         gets(palabra);
     } while (strcmpi(palabra, "") == 0);
@@ -1080,7 +1099,9 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
 
             if (id == -1)
             {
+                gotoxy(40, 13);
                 printf("No hay archivos agregados.\n");
+                gotoxy(35, 15);
                 system("pause");
                 break;
             }
@@ -1090,8 +1111,8 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             buscarNodoUnID(*arbol, palabra, id);
             memset(palabra, 0, sizeof(palabra));
 
-            system("pause");
-
+            printf("\n\n\n");
+            getch();
             break;
 
         case 3:
