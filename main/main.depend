@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1637449891 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\main.c
+1637613510 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -8,4 +8,12 @@
 	<stdbool.h>
 	<ctype.h>
 	<alg.h>
+	"gotoxy.h"
+
+1637613149 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\gotoxy.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+
+1637613149 d:\archivos de programa\todo prog-lab2\proyecto-lab\main\gotoxy.h
 
