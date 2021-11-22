@@ -89,9 +89,6 @@ void buscarPalabrasSimilares(nodoA *arbol, char *palabra); // punto 6
 int menu();
 void funcionesMenu(termino *arr, int *validos, nodoA **arbol);
 
-
-
-
 ///###################################################
 ///###############    EXTRA    #######################
 ///###################################################
@@ -101,6 +98,7 @@ void animation();
 void cargandoError();
 void marcoConsola();
 void logo();
+void copy();
 /**
 #######################################
 
@@ -111,13 +109,12 @@ void logo();
 
 int main()
 {
-    system ("color 3F ");
+    system("color 3F ");
     nodoA *arbol = NULL;
     termino arr[70000];
     int validos = 0;
 
     funcionesMenu(arr, &validos, &arbol);
-
 
     return 0;
 }
@@ -164,7 +161,6 @@ termino agregarTermino(termino t)
 /// FUNCION PRINCIPAL PARA CARGAR EL DICCIONARIO
 void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
 {
-    system("cls");
     char palabra[20];
     char seguir = 's';
     memset(palabra, 0, sizeof(palabra));
@@ -191,9 +187,12 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
     while (seguir == 's')
     {
         system("cls");
+        marcoConsola();
+        copy();
         char nombreArchivo[50];
         if (cantDoc > 0 && flag == 0)
         {
+            gotoxy(4, 3);
             printf("Archivos cargados: %d\n\n", cantDoc);
         }
         if (flag == 1)
@@ -201,6 +200,7 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
             flag = 0;
         }
         //
+        gotoxy(35, 13);
         printf("nombre del archivo con su extencion: ");
         fflush(stdin);
         gets(nombreArchivo);
@@ -245,20 +245,24 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
             }
 
             fclose(fp);
-
         }
         else
         {
             flag = 1;
             system("cls");
+            marcoConsola();
+            copy();
             cargandoError();
-            gotoxy(35,13);printf("El archivo no existe. Por favor, vuelva a intentarlo.\n\n");
+            gotoxy(35, 13);
+            printf("El archivo no existe. Por favor, vuelva a intentarlo.\n\n");
             system("pause");
         }
         /// RESETEA LA POSICION AL CAMBIAR DE DOCUMENTO
         if (flag == 0)
-        {   
+        {
             system("cls");
+            marcoConsola();
+            copy();
             printf("\n");
             animation();
             printf("\n");
@@ -268,8 +272,12 @@ void cargarDiccionario(termino arr[], int *validos, char *archivoIds)
             cantDoc++;
         }
         system("cls");
-        printf("\nCargar otro archivo? S/N: ");
+        marcoConsola();
+        copy();
+            gotoxy(40, 13);
+            printf("%cDesea cargar otro archivo? S/N: ", 168);
         fflush(stdin);
+        gotoxy(73, 13);
         scanf("%c", &seguir);
 
         memset(nombreArchivo, 0, sizeof(nombreArchivo));
@@ -408,8 +416,6 @@ void cargarMotorDeBusqueda(char *nombreArchivo, nodoA **lista)
 ///##########################   FIN PUNTO 1    ####################################
 ///################################################################################
 ///################################################################################
-
-
 
 ///################################################################################
 ///################################################################################
@@ -701,8 +707,6 @@ int verSiYaEstaLaId(int *IDs, int validos, int check)
 
     return 0;
 }
-
-
 
 /**#################################################################################################
     PUNTO 4
@@ -1005,19 +1009,30 @@ int menu()
 {
     int opcion = 0;
     marcoConsola();
+    gotoxy(58, 28);
+    printf(COPYRIGHT);
     logo();
-    gotoxy(58,28);printf(COPYRIGHT);
-    dibujarCuadro(32,16,88,26);
-    gotoxy(35,17);printf("[1]Escanear archivos\n");
-    gotoxy(35,18);printf("[2]Ver termino en un solo archivo\n");
-    gotoxy(35,19);printf("[3]Ver termino en varios archivos\n");
-    gotoxy(35,20);printf("[4]Buscar mas de un termino en un documento\n");
-    gotoxy(35,21);printf("[5]Buscar una frase completa\n");
-    gotoxy(35,22);printf("[6]Buscar palabra que mas se repite en un documento\n");
-    gotoxy(35,23);printf("[7]buscar palabras similares\n");
-    gotoxy(35,24);printf("[8]Salir\n");
-    gotoxy(53,25);printf("OPCION: ");
-    gotoxy(60,25);scanf("%d", &opcion);
+    dibujarCuadro(32, 16, 88, 26);
+    gotoxy(35, 17);
+    printf("[1]Escanear archivos\n");
+    gotoxy(35, 18);
+    printf("[2]Ver termino en un solo archivo\n");
+    gotoxy(35, 19);
+    printf("[3]Ver termino en varios archivos\n");
+    gotoxy(35, 20);
+    printf("[4]Buscar mas de un termino en un documento\n");
+    gotoxy(35, 21);
+    printf("[5]Buscar una frase completa\n");
+    gotoxy(35, 22);
+    printf("[6]Buscar palabra que mas se repite en un documento\n");
+    gotoxy(35, 23);
+    printf("[7]buscar palabras similares\n");
+    gotoxy(35, 24);
+    printf("[8]Salir\n");
+    gotoxy(53, 25);
+    printf("OPCION: ");
+    gotoxy(60, 25);
+    scanf("%d", &opcion);
     return opcion;
 }
 
@@ -1050,13 +1065,16 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
         switch (opcion)
         {
         case 1:
+            system("cls");
+            marcoConsola();
             cargarDiccionario(arr, validos, ARCHIVOID); // ojo con cargar muchas veces el archivo, cargarlo 1 vez y comentar esta linea
             cargarMotorDeBusqueda(DICCIONARIO, arbol);
             break;
 
         case 2:
             system("cls");
-
+            marcoConsola();
+            copy();
             /// COMO ESTA CONSIGNA PIDE SOLO BUSCAR EN UN ARCHIVO LE PIDE AL USUARIO EN CUAL QUIERE BUSCAR
             id = pedirID();
 
@@ -1078,7 +1096,9 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
 
         case 3:
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             id = retornarIdMayor(ARCHIVOID);
             int i = pedirVariosID(id, archivoElegido);
 
@@ -1091,7 +1111,9 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             break;
         case 4: // buscar varias palabras en UN archivo
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             int validos = pedirVariasPalabras(palabras);
             id = pedirID();
 
@@ -1116,13 +1138,17 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
 
         case 5:
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             buscarUnaFrase(*arbol);
 
             break;
         case 6:
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             pyf palabrasFrecuencias[3000];
             int validosFrecuencias = 0;
             id = retornarIdMayor(ARCHIVOID) + 1;
@@ -1157,7 +1183,9 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             break;
         case 7:
             system("cls");
-
+            marcoConsola();
+            gotoxy(58, 28);
+            printf(COPYRIGHT);
             printf("Palabra: ");
             fflush(stdin);
             gets(palabra);
@@ -1174,48 +1202,59 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
     } while (repite);
 }
 
+void animation()
+{
 
+    gotoxy(29, 10);
+    printf("******************************************************************\n");
+    gotoxy(29, 11);
+    printf("****************************CARGANDO******************************\n");
+    gotoxy(29, 12);
+    printf("******************************************************************\n");
 
-
-
-
-
-void animation(){
-
-    
-    gotoxy(29,10);printf("******************************************************************\n");
-    gotoxy(29,11);printf("****************************CARGANDO******************************\n");
-    gotoxy(29,12);printf("******************************************************************\n");
-
- 
     for (int i = 0; i < 62; i++)
     {
-        int cont = i*1;
-        
-   
-        Sleep(010);
-        gotoxy(29+i+1,14);printf("%c",219);
-        gotoxy(60,15);printf("%%%d", cont+ 39);
-    }
-  
-}
-void marcoConsola(){ // para no andar modificando individualmente en cada menu
-    dibujarCuadro(0,0,119,28);
+        int cont = i * 1;
 
+        Sleep(010);
+        gotoxy(29 + i + 1, 14);
+        printf("%c", 219);
+        gotoxy(60, 15);
+        printf("%%%d", cont + 39);
+    }
 }
-void cargandoError(){ // ANIMATIONS
+void marcoConsola()
+{ // para no andar modificando individualmente en cada menu
+    dibujarCuadro(0, 0, 119, 28);
+}
+void cargandoError()
+{ // ANIMATIONS
     system("cls");
-    gotoxy(30,10);printf("**************************************************************\n");
-    gotoxy(30,11);printf("************************CARGA FALLIDA*************************\n");
-    gotoxy(30,12);printf("**************************************************************\n");
-            
+    gotoxy(30, 10);
+    printf("**************************************************************\n");
+    gotoxy(30, 11);
+    printf("************************CARGA FALLIDA*************************\n");
+    gotoxy(30, 12);
+    printf("**************************************************************\n");
+
     printf("\n\n");
 }
-void logo(){
+void logo()
+{
 
- gotoxy(27,6);printf(" dP88b8 88   88 88     88   88     dP88b8 88   88 88     88   88 ");
- gotoxy(27,7);printf("dP      88   88 88     88   88    dP      88   88 88     88   88 ");
- gotoxy(27,8);printf("Yb  888 Y8   8P 88  oo Y8   8P    Yb  888 Y8   8P 88  oo Y8   8P ");
- gotoxy(27,9);printf(" YboodP  YbodP  88ood8  YbodP      YboodP  YbodP  88ood8  YbodP  ");
-                                                                                                                            
+    gotoxy(27, 6);
+    printf(" dP88b8 88   88 88     88   88     dP88b8 88   88 88     88   88 ");
+    gotoxy(27, 7);
+    printf("dP      88   88 88     88   88    dP      88   88 88     88   88 ");
+    gotoxy(27, 8);
+    printf("Yb  888 Y8   8P 88  oo Y8   8P    Yb  888 Y8   8P 88  oo Y8   8P ");
+    gotoxy(27, 9);
+    printf(" YboodP  YbodP  88ood8  YbodP      YboodP  YbodP  88ood8  YbodP  ");
+}
+
+void copy()
+{
+
+    gotoxy(58, 28);
+    printf(COPYRIGHT);
 }
