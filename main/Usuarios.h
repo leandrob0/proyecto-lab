@@ -48,18 +48,20 @@ typedef struct nodoA
 } nodoA;
 
 /**
-
     PROTOTIPADOS
-
 */
-
-void verListaVariosID(nodoT *lista, int *idsArchivo, int validos);
+int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra);
+void verListaVariosID(nodoT *lista, int *idsArchivo, int validos, char *palabra);
 void buscarNodoVariosID(nodoA *arbol, char *palabra, int *idArchivo, int validos);
+int retornarIdMayor(char *nombreArchivo);
+int verSiYaEstaLaId(int *IDs, int validos, int check);
 int pedirVariosID(int id, int *archivoElegido);
-void verListaUnID(nodoT *lista, int idArchivo);
+void verListaUnID(nodoT *lista, int idArchivo, char *palabra);
+void verListaUnIdMuchasPalabras(nodoT *lista, int idArchivo, char *palabra);
 void buscarNodoUnID(nodoA *arbol, char *palabra, int idArchivo);
 int pedirID();
-int pedirVariasPalabras(char palabras[5][20]);
+int verificaPalabraExisteArbol(nodoA *arbol, char *palabra);
+int pedirVariasPalabras(nodoA *arbol, char palabras[5][20]);
 void pedirUnaPalabra(char *palabra);
 int buscarNodoUnIDYRetornar(nodoA *arbol, char *palabra, int idArchivo, int *posiciones);
 int buscarPosicionesFrase(nodoT *lista, int idArchivo, int *posiciones);
@@ -71,8 +73,4 @@ void palabrasYFrecuencias(nodoA *arbol, int idArchivo, pyf *palabrasFrecuencias,
 
 int Levenshtein(char *s1, char *s2);                       // punto 6
 void buscarPalabrasSimilares(nodoA *arbol, char *palabra); // punto 6
-
-int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra); //aux
-int retornarIdMayor(char *nombreArchivo); //aux
-int verSiYaEstaLaId(int *IDs, int validos, int check); //aux
 #endif // USUARIOS_H_INCLUDED
