@@ -65,7 +65,7 @@ void pasarTerminosArchivo(termino *terminos, int validos, int idDoc);
 void cargarMotorDeBusqueda(char *nombreArchivo, nodoA **lista);
 int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra);
 void mostrarArbol(nodoA *arbol);
-void verListaVariosID(nodoT *lista, int *idsArchivo, int validos);
+void verListaVariosID(nodoT *lista, int *idsArchivo, int validos, char *palabra);
 void buscarNodoVariosID(nodoA *arbol, char *palabra, int *idArchivo, int validos);
 int retornarIdMayor(char *nombreArchivo);
 int verSiYaEstaLaId(int *IDs, int validos, int check);
@@ -124,7 +124,7 @@ int main()
 */
 ///################################################################################
 ///################################################################################
-///##########################       PUNTO 1    ####################################
+///##########################       PUNTO 0    ####################################
 ///################################################################################
 ///################################################################################
 
@@ -413,15 +413,10 @@ void cargarMotorDeBusqueda(char *nombreArchivo, nodoA **lista)
 }
 ///################################################################################
 ///################################################################################
-///##########################   FIN PUNTO 1    ####################################
+///##########################   FIN PUNTO 0    ####################################
 ///################################################################################
 ///################################################################################
 
-///################################################################################
-///################################################################################
-///##########################    PUNTO 2       ####################################
-///################################################################################
-///################################################################################
 /// FUNCION AUXILIAR
 int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra)
 {
@@ -449,18 +444,36 @@ int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra)
     }
 }
 
+int verSiYaEstaLaId(int *IDs, int validos, int check) /// verifica si la id ya existe
+{
+    for (int i = 0; i < validos - 1; i++)
+    {
+        if (IDs[i] == check)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 /// FUNCIONES PEDIR IDS Y PALABRAS
 int pedirVariosID(int id, int *archivoElegido)
 {
     int i = 0;
+
     char seguir = 's';
 
     do
     {
         if (i == id + 1)
         {
+            marcoConsola();
+            copy();
+            gotoxy(38, 10);
             printf("Todos los archivos seleccionados.\n");
 
+            gotoxy(1, 27);
             system("pause");
             system("cls");
 
@@ -471,7 +484,10 @@ int pedirVariosID(int id, int *archivoElegido)
 
         do
         {
+            marcoConsola();
+            copy();
             int aux = 0;
+            gotoxy(35, 10);
             printf("Ingrese el ID del archivo en el que desee buscar: ");
             scanf("%i", &aux);
 
@@ -480,7 +496,12 @@ int pedirVariosID(int id, int *archivoElegido)
             if (check == 1)
             {
                 flag = 1;
+                system("cls");
+                marcoConsola();
+                copy();
+                gotoxy(49, 10);
                 printf("ID ya ingresada.\n");
+                gotoxy(1, 27);
                 system("pause");
                 system("cls");
             }
@@ -492,8 +513,8 @@ int pedirVariosID(int id, int *archivoElegido)
         } while (flag == 1 || archivoElegido[i] > id || archivoElegido < 0);
 
         i++;
-        system("cls");
-        printf("\nDesea elegir otro archivo?(S/N): ");
+        gotoxy(35, 12);
+        printf("Desea elegir otro archivo?(S/N): ");
         fflush(stdin);
         scanf("%c", &seguir);
         system("cls");
@@ -510,22 +531,40 @@ int pedirVariosID(int id, int *archivoElegido)
 #################################################################################################
 */
 
-void verListaVariosID(nodoT *lista, int *idsArchivo, int validos)
+void verListaVariosID(nodoT *lista, int *idsArchivo, int validos, char *palabra)
 {
+    system("cls");
+    int j = 1;
+    dibujarCuadro(0, 0, 119, 500); // dibuja el nuevo marco de la consola mas grande para que no se buguee
 
+    gotoxy(28, 0);
+    printf(COPYRIGHT);
+    dibujarCuadro(27, 2, 100, 4); // el marco de el id y palabra
+    gotoxy(28, 3);
+    printf("PALABRA: %s", palabra);
+    gotoxy(56, 3);
+    printf("DOCUMENTOS ID: ");
+    for (int i = 0; i < validos; i++)
+    {
+        printf(" %d | ", idsArchivo[i]);
+    }
+    printf("\n\n");
     while (lista != NULL)
     {
         // loopea el arreglo de los ids y ve si alguna es igual a la actual de la lista.
         for (int i = 0; i < validos; i++)
         {
-            if (idsArchivo[i] == lista->idDOC)
+            if (lista->idDOC == idsArchivo[i])
             {
-                printf("Documento ID:%d\n", lista->idDOC);
-                printf("posicion:%d\n", lista->pos);
-                printf("\n");
+                printf("   ID:%d Pos: %d |", lista->idDOC, lista->pos);
             }
         }
+        if (j == 6)
+        {
+            printf("\n");
+        }
         lista = lista->sig;
+        j++;
     }
 }
 
@@ -536,9 +575,8 @@ void buscarNodoVariosID(nodoA *arbol, char *palabra, int *idArchivo, int validos
     {
         if (strcmpi(arbol->palabra, palabra) == 0)
         {
-            printf("PALABRA: %s", palabra);
 
-            verListaVariosID(arbol->ocurrencias, idArchivo, validos);
+            verListaVariosID(arbol->ocurrencias, idArchivo, validos, palabra);
         }
         else
         {
@@ -553,7 +591,6 @@ void buscarNodoVariosID(nodoA *arbol, char *palabra, int *idArchivo, int validos
         }
     }
 }
-
 
 //************************************************************************************************
 //************************************************************************************************
@@ -643,8 +680,7 @@ int pedirID()
     return aux;
 }
 
-
-//corresponde a PuntoUno
+// corresponde a PuntoUno
 void pedirUnaPalabra(char *palabra)
 {
     do
@@ -723,19 +759,6 @@ int retornarIdMayor(char *nombreArchivo)
     }
 
     return id;
-}
-
-int verSiYaEstaLaId(int *IDs, int validos, int check)
-{
-    for (int i = 0; i < validos - 1; i++)
-    {
-        if (IDs[i] == check)
-        {
-            return 1;
-        }
-    }
-
-    return 0;
 }
 
 /**#################################################################################################
@@ -1115,6 +1138,7 @@ void puntoDos(nodoA *arbol, char *palabra)
     buscarNodoVariosID(arbol, palabra, archivoElegido, i);
 
     memset(palabra, 0, sizeof(palabra));
+    printf("\n\n\n\n");
     system("pause");
 }
 
