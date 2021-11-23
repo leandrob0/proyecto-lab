@@ -72,4 +72,13 @@ void palabrasYFrecuencias(nodoA *arbol, int idArchivo, pyf *palabrasFrecuencias,
 
 int Levenshtein(char *s1, char *s2);                       // punto 6
 void buscarPalabrasSimilares(nodoA *arbol, char *palabra); // punto 6
+
+
+void puntoCero(termino *arr, int *validos, nodoA **arbol);
+void puntoUno(nodoA *arbol, char *palabra);
+void puntoDos(nodoA *arbol, char *palabra);
+void puntoTres(nodoA *arbol, char *palabra, char palabras[][20]);
+void puntoCuatro(nodoA *arbol);
+void puntoCinco(nodoA *arbol);
+void puntoSeis(nodoA *arbol, char *palabra);
 #endif // USUARIOS_H_INCLUDED
