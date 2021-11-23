@@ -1,13 +1,5 @@
 #include "Usuarios.h"
 
-/**
-#################################################################################################
-    FUNCIONES AUXILIARES MENU
-    FUNCIONES AUXILIARES MENU
-    FUNCIONES AUXILIARES MENU
-#################################################################################################
-*/
-
 /**#################################################################################################
     PUNTO 1
     PUNTO 1
@@ -18,7 +10,6 @@ void buscarNodoUnID(nodoA *arbol, char *palabra, int idArchivo)
 
     if (arbol)
     {
-
         if (strcmpi(arbol->palabra, palabra) == 0)
         {
             gotoxy(2, 4);printf("PALABRA: %s", palabra);
@@ -60,8 +51,6 @@ void verListaUnID(nodoT *lista, int idArchivo)
         lista = lista->sig;
         i++;
     }
-
-
 }
 
 int pedirID()
