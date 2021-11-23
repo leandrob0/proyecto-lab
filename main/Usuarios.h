@@ -60,7 +60,6 @@ void verListaUnID(nodoT *lista, int idArchivo, char *palabra);
 void verListaUnIdMuchasPalabras(nodoT *lista, int idArchivo, char *palabra);
 void buscarNodoUnID(nodoA *arbol, char *palabra, int idArchivo);
 int pedirID();
-int verificaPalabraExisteArbol(nodoA *arbol, char *palabra);
 int pedirVariasPalabras(nodoA *arbol, char palabras[5][20]);
 void pedirUnaPalabra(char *palabra);
 int buscarNodoUnIDYRetornar(nodoA *arbol, char *palabra, int idArchivo, int *posiciones);

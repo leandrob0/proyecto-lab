@@ -18,6 +18,7 @@ void copy();
 
 int main()
 {
+    system("cls");
     system("color 3F ");
     nodoA *arbol = NULL;
     termino arr[70000];
@@ -103,7 +104,7 @@ void puntoDos(nodoA *arbol, char *palabra)
     gotoxy(58, 28);
     printf(COPYRIGHT);
     int id = retornarIdMayor(ARCHIVOID);
-    int archivoElegido[id + 1];
+    int archivoElegido[id+1];
     int i = pedirVariosID(id, archivoElegido);
 
     pedirUnaPalabra(palabra);

@@ -1,4 +1,5 @@
 #include "Usuarios.h"
+
 int buscarPalabraEnDiccionario(nodoA *arbolDiccionario, char *palabra)
 {
     if (arbolDiccionario != NULL)
@@ -320,29 +321,6 @@ void pedirUnaPalabra(char *palabra)
 //******************************    PUNTO 1    ***************************************************
 //************************************************************************************************
 
-int verificaPalabraExisteArbol(nodoA *arbol, char *palabra)
-{
-
-    if (arbol)
-    {
-        if (strcmpi(arbol->palabra, palabra) == 0)
-        {
-            return 1;
-        }
-        else
-        {
-            if (strcmpi(arbol->palabra, palabra) > 0)
-            {
-                return verificaPalabraExisteArbol(arbol->izq, palabra);
-            }
-            else
-            {
-                return verificaPalabraExisteArbol(arbol->der, palabra);
-            }
-        }
-    }
-    return 0;
-}
 int pedirVariasPalabras(nodoA *arbol, char palabras[5][20])
 {
     int validos = 0;
@@ -362,7 +340,7 @@ int pedirVariasPalabras(nodoA *arbol, char palabras[5][20])
             printf("Ingrese la palabra que desea buscar: ");
             fflush(stdin);
             gets(palabra);
-            check = verificaPalabraExisteArbol(arbol, palabra);
+            check = buscarPalabraEnDiccionario(arbol, palabra);
             if (check == 1)
             {
                 /* code */
