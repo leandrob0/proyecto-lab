@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Usuarios.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Usuarios.h" />
 		<Unit filename="gotoxy.c">
 			<Option compilerVar="CC" />
 		</Unit>

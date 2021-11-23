@@ -1,14 +1,7 @@
 # depslib dependency file v1.0
-1637621334 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\main.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	<locale.h>
-	<windows.h>
-	<stdbool.h>
-	<ctype.h>
-	<alg.h>
+1637677802 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\main.c
 	"gotoxy.h"
+	"Usuarios.h"
 
 1637613149 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\gotoxy.c
 	<stdio.h>
@@ -17,10 +10,11 @@
 
 1637613149 d:\archivos de programa\todo prog-lab2\proyecto-lab\main\gotoxy.h
 
-1637676760 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\usuarios.c
+1637677477 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\usuarios.c
 	"Usuarios.h"
+	"Motor.h"
 
-1637676636 d:\archivos de programa\todo prog-lab2\proyecto-lab\main\usuarios.h
+1637677763 d:\archivos de programa\todo prog-lab2\proyecto-lab\main\usuarios.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -30,4 +24,19 @@
 	<ctype.h>
 	<alg.h>
 	"gotoxy.h"
+
+1637677639 d:\archivos de programa\todo prog-lab2\proyecto-lab\main\motor.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+	<windows.h>
+	<stdbool.h>
+	<ctype.h>
+	<alg.h>
+	"gotoxy.h"
+
+1637677469 source:d:\archivos de programa\todo prog-lab2\proyecto-lab\main\motor.c
+	"Motor.h"
+	"Usuarios.h"
 
