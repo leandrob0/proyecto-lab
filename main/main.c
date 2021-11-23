@@ -946,6 +946,7 @@ void buscarUnaFrase(nodoA *arbol)
     int j = 0;
     int ctrl = 0;
 
+    gotoxy(3, 4);
     printf("Ingrese la frase que desea buscar: ");
     fflush(stdin);
     fgets(frase, sizeof(frase), stdin);
@@ -1005,6 +1006,10 @@ void buscarUnaFrase(nodoA *arbol)
         if (check == 1)
         {
             found = 1;
+            system("cls");
+            marcoConsola();
+                copy();
+            gotoxy(38, 10);
             printf("La frase fue encontrada en el documento con ID: %i\n", i);
             system("pause");
         }
@@ -1116,7 +1121,7 @@ int Levenshtein(char *s1, char *s2)
 }
 void buscarPalabrasSimilares(nodoA *arbol, char *palabra)
 {
-
+    int i = 1;
     int distancia = 0;
     if (arbol)
     {
@@ -1124,7 +1129,9 @@ void buscarPalabrasSimilares(nodoA *arbol, char *palabra)
 
         if (distancia <= 3)
         {
-            printf("%s\n\n", arbol->palabra);
+        
+            printf("\t%s\n", arbol->palabra);
+
         }
         else
         {
@@ -1272,13 +1279,14 @@ void puntoCuatro(nodoA *arbol)
 void puntoCinco(nodoA *arbol)
 {
     marcoConsola();
-    gotoxy(58, 28);
-    printf(COPYRIGHT);
+    copy();
     pyf palabrasFrecuencias[3000];
     int validosFrecuencias = 0;
     int id = retornarIdMayor(ARCHIVOID) + 1;
     int idDOC = 0;
 
+    dibujarCuadro(3, 2, 20, 4); // el marco de ingresar ID
+    gotoxy(4, 3);
     printf("Ingrese ID: ");
     scanf("%d", &idDOC);
 
@@ -1294,24 +1302,35 @@ void puntoCinco(nodoA *arbol)
                 max = palabrasFrecuencias[i];
             }
         }
-        printf("ID DOC %i\nPalabra: %s\nFRECUENCIA: %i\n\n", idDOC, max.palabra, max.frecuencia);
+        dibujarCuadro(23, 11, 90, 13); // el marco de el id y palabra y frecuencia
+        gotoxy(24, 12);
+        printf("ID DOC:%i" ,idDOC);
+        gotoxy(38, 12);
+        printf("Palabra:%s",max.palabra);
+        gotoxy(65, 12);
+        printf("FRECUENCIA:%i",  max.frecuencia);
         memset(palabrasFrecuencias, 0, sizeof(palabrasFrecuencias));
         validosFrecuencias = 0;
     }
     else
     {
+        system("cls");
+            marcoConsola();
+    copy();
+        gotoxy(38,10);
         printf("El ID no existe!.\n");
     }
-
+    gotoxy(3, 27);
     system("pause");
 }
 
 void puntoSeis(nodoA *arbol, char *palabra)
 {
     marcoConsola();
-    gotoxy(58, 28);
-    printf(COPYRIGHT);
+    copy();
 
+    dibujarCuadro(3, 3, 32, 5);
+    gotoxy(4, 4);
     printf("Palabra: ");
     fflush(stdin);
     gets(palabra);
@@ -1381,19 +1400,19 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
         case 5:
             system("cls");
 
-            puntoCuatro(*arbol);
+            puntoCuatro(*arbol);// check
 
             break;
         case 6:
             system("cls");
 
-            puntoCinco(*arbol);
+            puntoCinco(*arbol); // check
 
             break;
         case 7:
             system("cls");
 
-            puntoSeis(*arbol, palabra);
+            puntoSeis(*arbol, palabra);// check
 
             break;
         case 8:
