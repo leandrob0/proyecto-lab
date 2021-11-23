@@ -632,7 +632,7 @@ void verListaUnIdMuchasPalabras(nodoT *lista, int idArchivo, char *palabra)
         lista = lista->sig;
         if (flag == 1)
         {
-            
+
             i++;
         }
         flag = 0;
@@ -682,7 +682,7 @@ void buscarNodoUnID(nodoA *arbol, char *palabra, int idArchivo)
         if (strcmpi(arbol->palabra, palabra) == 0)
         {
 
-            verListaUnIdMuchasPalabras(arbol->ocurrencias, idArchivo, palabra);
+            verListaUnID(arbol->ocurrencias, idArchivo, palabra);
         }
         else
         {
@@ -716,7 +716,7 @@ int pedirID()
         gotoxy(35, 13);
         printf("Ingrese el ID del archivo en el que desee buscar: ");
         scanf("%i", &aux);
-    } while (aux > id || aux < 0);
+    } while (isdigit(aux));
 
     return aux;
 }
@@ -803,9 +803,8 @@ int pedirVariasPalabras(nodoA *arbol, char palabras[5][20])
         if (check == 1)
         {
             validos++;
-            
         }
-        
+
         if (validos == 5)
         {
             system("cls");
@@ -1203,6 +1202,7 @@ void puntoUno(nodoA *arbol, char *palabra)
         printf("No hay archivos agregados.\n");
         gotoxy(35, 15);
         system("pause");
+        id = 9;
     }
     else
     {
@@ -1237,7 +1237,7 @@ void puntoTres(nodoA *arbol, char *palabra, char palabras[][20])
     marcoConsola();
     gotoxy(58, 28);
     printf(COPYRIGHT);
-    int validos = pedirVariasPalabras(arbol,palabras);
+    int validos = pedirVariasPalabras(arbol, palabras);
     int id = pedirID();
 
     if (id == -1)
@@ -1400,6 +1400,7 @@ void funcionesMenu(termino *arr, int *validos, nodoA **arbol)
             repite = false;
             break;
         default:
+            repite = false;
             break;
         }
     } while (repite);
